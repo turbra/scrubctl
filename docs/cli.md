@@ -178,9 +178,9 @@ Kinds outside that set are excluded with `kind not in curated resource set`. Use
 
 ### Broad set (scrub / stdin)
 
-The `scrub` subcommand and stdin pipe mode accept a broader supported set of ~32 resource kinds, since you are explicitly providing the input. In addition to the curated kinds above, direct scrub supports cluster-scoped kinds (ClusterRole, ClusterRoleBinding, Namespace, PersistentVolume, StorageClass), runtime kinds (Pod, ReplicaSet, Endpoints), and infrastructure kinds (CustomResourceDefinition, ValidatingWebhookConfiguration, MutatingWebhookConfiguration). Resources that would be excluded in a scan context (e.g. controller-owned, runtime-generated) are instead classified as `review` and still sanitized and output.
+The `scrub` subcommand and stdin pipe mode accept a broader supported set of ~32 resource kinds, since you are explicitly providing the input. In addition to the curated kinds above, direct scrub supports cluster-scoped kinds (`ClusterRole`, `ClusterRoleBinding`, `Namespace`, `PersistentVolume`, `StorageClass`), runtime kinds (`Pod`, `ReplicaSet`, `Endpoints`), and infrastructure kinds (`CustomResourceDefinition`, `ValidatingWebhookConfiguration`, `MutatingWebhookConfiguration`). Resources that would be excluded in a scan context (e.g. controller-owned, runtime-generated) are instead classified as `review` and still sanitized and output.
 
-Kinds outside the supported set are rejected with `kind not supported for direct scrub`.
+Direct scrub still uses an explicit supported set rather than accepting arbitrary Kubernetes kinds. Unsupported kinds are rejected.
 
 ## OpenShift and oc
 
