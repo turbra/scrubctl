@@ -15,6 +15,7 @@ import (
 	"sigs.k8s.io/yaml"
 
 	"github.com/turbra/scrubctl/internal/archive"
+	"github.com/turbra/scrubctl/internal/config"
 	"github.com/turbra/scrubctl/internal/argocd"
 	"github.com/turbra/scrubctl/internal/classify"
 	"github.com/turbra/scrubctl/internal/resources"
@@ -30,6 +31,7 @@ var (
 )
 
 type rootOptions struct {
+	ConfigPath     string
 	Kubeconfig     string
 	Context        string
 	Namespace      string
@@ -54,6 +56,9 @@ func newRootCommand() *cobra.Command {
 		Short:         "Sanitize live manifests and generate GitOps export artifacts",
 		SilenceUsage:  true,
 		SilenceErrors: true,
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			return applyConfigFile(cmd, opts)
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
 				return cmd.Help()
@@ -66,6 +71,7 @@ func newRootCommand() *cobra.Command {
 	}
 
 	flags := cmd.PersistentFlags()
+	flags.StringVar(&opts.ConfigPath, "config", "", "Path to a config file for default flag values")
 	flags.StringVar(&opts.Kubeconfig, "kubeconfig", "", "Path to the kubeconfig file")
 	flags.StringVar(&opts.Context, "context", "", "Kubeconfig context to use")
 	flags.StringVarP(&opts.Namespace, "namespace", "n", "", "Target namespace")
@@ -415,4 +421,21 @@ func joinValidationErrors(errs argocd.ValidationErrors) string {
 		values = append(values, field+": "+errs[field])
 	}
 	return strings.Join(values, ", ")
+}
+
+func applyConfigFile(cmd *cobra.Command, opts *rootOptions) error {
+	if opts.ConfigPath == "" {
+		return nil
+	}
+	cfg, err := config.Load(opts.ConfigPath)
+	if err != nil {
+		return err
+	}
+	if !cmd.Flags().Changed("include-kinds") && len(cfg.IncludeKinds) > 0 {
+		opts.IncludeKinds = cfg.IncludeKindsCSV()
+	}
+	if !cmd.Flags().Changed("exclude-kinds") && len(cfg.ExcludeKinds) > 0 {
+		opts.ExcludeKinds = cfg.ExcludeKindsCSV()
+	}
+	return nil
 }

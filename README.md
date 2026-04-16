@@ -82,6 +82,7 @@ When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resourc
 
 | Flag | Description |
 |------|-------------|
+| `--config` | Path to a config file for default flag values (see [docs](./docs/cli.md#config-file)) |
 | `--kubeconfig` | Path to the kubeconfig file |
 | `--context` | Kubeconfig context to use |
 | `-n, --namespace` | Target namespace |
