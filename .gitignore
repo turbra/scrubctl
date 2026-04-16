@@ -1,5 +1,5 @@
 bin/
-scrubctl
+/scrubctl
 dist/
 *.exe
 *.test
