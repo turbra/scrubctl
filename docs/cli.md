@@ -6,57 +6,9 @@ description: >-
 
 # Command Reference
 
-`scrubctl` is a standalone Go CLI for namespace scan, resource classification, manifest sanitization, ZIP export, and Argo CD Application generation. It runs as a local binary — no OpenShift console required.
+Complete reference for every `scrubctl` subcommand, flag, and supported resource kind. The cluster-facing subcommands (`scan`, `export`, `generate argocd`) read your active kubeconfig the same way `kubectl` or `oc` do. The `scrub` subcommand and stdin pipe mode work on local YAML only, so they need no cluster access and no kubeconfig.
 
-The cluster-facing subcommands (`scan`, `export`, `generate argocd`) read your active kubeconfig the same way `kubectl` or `oc` do. The `scrub` subcommand and stdin pipe mode work on local YAML only, so they need no cluster access and no kubeconfig.
-
-## Demo
-
-<div id="demo-player"></div>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    AsciinemaPlayer.create(
-      '{{ "/demo-scrubctl.cast" | relative_url }}',
-      document.getElementById('demo-player'),
-      { cols: 120, rows: 36, idleTimeLimit: 3, speed: 1.5, theme: 'asciinema', fit: 'width' }
-    );
-  });
-</script>
-
-## Install
-
-Three steps, every time:
-
-1. Build or download the `scrubctl` binary.
-2. Place it in a directory on your `PATH`.
-3. Verify with `scrubctl version`.
-
-### Install from a release archive
-
-> Not yet available — no tagged releases have been published. Use **Build from source** below until the first `v*.*.*` tag ships.
-
-```sh
-tar -xzf scrubctl-<version>-<os>-<arch>.tar.gz
-sudo mv scrubctl /usr/local/bin/
-scrubctl version
-```
-
-Download the archive matching your OS/arch from the [GitHub Releases page](https://github.com/turbra/scrubctl/releases) (Linux, macOS, Windows — amd64 and arm64). On Windows, extract the `.zip` and move `scrubctl.exe` into a directory on your `PATH`.
-
-### Build from source
-
-From a clone of this repository (requires Go 1.21+):
-
-```sh
-go build -o scrubctl ./cmd/scrubctl
-sudo mv scrubctl /usr/local/bin/
-scrubctl version
-```
-
-### Notes
-
-- If `/usr/local/bin` is not on your `PATH`, run `echo $PATH` and either move `scrubctl` into a directory that is listed, or add its directory to your `PATH` (for example, `export PATH="$PATH:$HOME/.local/bin"` in `~/.bashrc` or `~/.zshrc`).
-- `go install github.com/turbra/scrubctl/cmd/scrubctl@latest` places the binary in `$(go env GOBIN)` if set, otherwise `$(go env GOPATH)/bin` (typically `~/go/bin`). Add that directory to your `PATH`, or copy `scrubctl` from it into `/usr/local/bin/`.
+For installation instructions, quick start examples, and the embedded demo, see <a href="{{ '/' | relative_url }}"><kbd>DOCS HOME</kbd></a>.
 
 ## Usage
 
@@ -92,30 +44,6 @@ Flags:
       --secret-handling string   Secret handling mode: redact, omit, or include (default "redact")
 
 Use "scrubctl [command] --help" for more information about a command.
-```
-
-### Quick examples
-
-Five of the most common invocations at a glance. Each one maps to a full section under **Commands** below.
-
-```sh
-# Scrub a single resource file — no cluster access needed
-scrubctl scrub -f deployment.yaml
-
-# Pipe a live resource through scrubctl
-oc get deploy/web -n my-app -o yaml | scrubctl
-
-# Scan a namespace and print the classification table
-scrubctl scan my-app
-
-# Export a namespace as a ZIP archive into ./out
-scrubctl export my-app -o ./out
-
-# Generate an Argo CD Application manifest
-scrubctl generate argocd my-app \
-  --repo-url https://github.com/example/repo.git \
-  --revision main \
-  --path manifests/overlays/install
 ```
 
 ## Commands
