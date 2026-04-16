@@ -99,7 +99,7 @@ The `scan`, `export`, and `generate argocd` commands work with a **curated set**
 - **Kubernetes**: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Ingress, Role, RoleBinding, ServiceAccount, LimitRange, PodDisruptionBudget, ResourceQuota
 - **OpenShift**: Route, BuildConfig, ImageStream, ImageStreamTag
 
-The `scrub` command and stdin pipe mode accept a **broader set** (~32 kinds), including cluster-scoped and runtime kinds like Pod, Namespace, ClusterRole, and PersistentVolume. See [Resource scope](./docs/cli.md#resource-scope) for the full list.
+The `scrub` command and stdin pipe mode accept a **broader supported set** (~32 kinds), including cluster-scoped kinds (ClusterRole, Namespace, PersistentVolume), runtime kinds (Pod, ReplicaSet), and infrastructure kinds (CustomResourceDefinition, ValidatingWebhookConfiguration). See [Resource scope](./docs/cli.md#resource-scope) for details.
 
 ## Related
 
