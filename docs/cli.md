@@ -176,11 +176,9 @@ The `scan`, `export`, and `generate argocd` subcommands work with a curated set 
 
 Kinds outside that set are excluded with `kind not in curated resource set`. Use `--include-kinds` and `--exclude-kinds` to filter the curated set within these boundaries.
 
-### Broad set (scrub / stdin)
+### Any kind (scrub / stdin)
 
-The `scrub` subcommand and stdin pipe mode accept a broader supported set of ~32 resource kinds, since you are explicitly providing the input. In addition to the curated kinds above, direct scrub supports cluster-scoped kinds (`ClusterRole`, `ClusterRoleBinding`, `Namespace`, `PersistentVolume`, `StorageClass`), runtime kinds (`Pod`, `ReplicaSet`, `Endpoints`), and infrastructure kinds (`CustomResourceDefinition`, `ValidatingWebhookConfiguration`, `MutatingWebhookConfiguration`). Resources that would be excluded in a scan context (e.g. controller-owned, runtime-generated) are instead classified as `review` and still sanitized and output.
-
-Direct scrub still uses an explicit supported set rather than accepting arbitrary Kubernetes kinds. Unsupported kinds are rejected.
+The `scrub` subcommand and stdin pipe mode accept **any** Kubernetes kind — if you pipe it, scrubctl sanitizes it. Generic sanitization (metadata, status, annotations, finalizers) applies to every resource; kind-specific cleanup fires for known types like Deployment and Service. Resources that would be excluded in a scan context (e.g. controller-owned, runtime-generated) are instead classified as `review` and still sanitized and output.
 
 ## OpenShift and oc
 

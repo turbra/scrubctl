@@ -99,7 +99,7 @@ The `scan`, `export`, and `generate argocd` commands work with a **curated set**
 - **Kubernetes**: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Ingress, Role, RoleBinding, ServiceAccount, LimitRange, PodDisruptionBudget, ResourceQuota
 - **OpenShift**: Route, BuildConfig, ImageStream, ImageStreamTag
 
-The `scrub` command and stdin pipe mode accept a broader supported set (~32 kinds), including kinds like `Pod`, `Namespace`, `ClusterRole`, and `PersistentVolume`, so you can sanitize a manifest you already selected without making it part of the curated export surface.
+The `scrub` command and stdin pipe mode accept **any** Kubernetes kind — if you pipe it, scrubctl sanitizes it. Generic sanitization (metadata, status, annotations, finalizers) applies to every kind; kind-specific cleanup fires for known types like Deployment and Service.
 
 ## Related
 

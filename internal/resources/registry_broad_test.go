@@ -2,34 +2,6 @@ package resources
 
 import "testing"
 
-func TestIsBroadScrubKind(t *testing.T) {
-	expected := []string{
-		"APIService", "ClusterRole", "ClusterRoleBinding", "ConfigMap",
-		"CronJob", "CustomResourceDefinition", "DaemonSet", "Deployment",
-		"Endpoints", "HorizontalPodAutoscaler", "Ingress", "Job",
-		"LimitRange", "MutatingWebhookConfiguration", "Namespace",
-		"NetworkPolicy", "PersistentVolume", "PersistentVolumeClaim",
-		"Pod", "PodDisruptionBudget", "PriorityClass", "ReplicaSet",
-		"ReplicationController", "ResourceQuota", "Role", "RoleBinding",
-		"Secret", "Service", "ServiceAccount", "StatefulSet",
-		"StorageClass", "ValidatingWebhookConfiguration",
-	}
-	for _, kind := range expected {
-		if !IsBroadScrubKind(kind) {
-			t.Errorf("IsBroadScrubKind(%q) = false, want true", kind)
-		}
-	}
-}
-
-func TestIsBroadScrubKind_Unknown(t *testing.T) {
-	unknowns := []string{"MyCustomThing", "Widget", ""}
-	for _, kind := range unknowns {
-		if IsBroadScrubKind(kind) {
-			t.Errorf("IsBroadScrubKind(%q) = true, want false", kind)
-		}
-	}
-}
-
 func TestNewCuratedKinds(t *testing.T) {
 	newKinds := []struct {
 		kind string

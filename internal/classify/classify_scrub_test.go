@@ -51,11 +51,9 @@ func TestClassifyForDirectScrub(t *testing.T) {
 			wantReason:         "Namespace policy resource may not belong in app manifests",
 		},
 		{
-			name:               "unknown kind rejected",
+			name:               "unknown kind is include",
 			resource:           makeResource("example.com/v1", "MyCustomThing", "foo"),
-			wantClassification: types.ClassificationExclude,
-			wantReason:         "kind not supported for direct scrub",
-			wantSanitizedNil:   true,
+			wantClassification: types.ClassificationInclude,
 		},
 		{
 			name: "ownerReferences is review not exclude",

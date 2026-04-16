@@ -17,9 +17,6 @@ func ClassifyCuratedResource(resource types.ResourceObject) types.ResourceClassi
 }
 
 func ClassifyForDirectScrub(resource types.ResourceObject) types.ResourceClassification {
-	if !resources.IsBroadScrubKind(resource.Kind()) {
-		return newClassification(resource, types.ClassificationExclude, "kind not supported for direct scrub")
-	}
 	return classifyForScrub(resource)
 }
 

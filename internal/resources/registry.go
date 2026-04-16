@@ -80,44 +80,6 @@ func ToGVK(option ResourceTypeOption) types.GroupVersionKind {
 	}
 }
 
-var BroadScrubKinds = map[string]bool{
-	"APIService":                     true,
-	"ClusterRole":                    true,
-	"ClusterRoleBinding":             true,
-	"ConfigMap":                      true,
-	"CronJob":                        true,
-	"CustomResourceDefinition":       true,
-	"DaemonSet":                      true,
-	"Deployment":                     true,
-	"Endpoints":                      true,
-	"HorizontalPodAutoscaler":        true,
-	"Ingress":                        true,
-	"Job":                            true,
-	"LimitRange":                     true,
-	"MutatingWebhookConfiguration":   true,
-	"Namespace":                      true,
-	"NetworkPolicy":                  true,
-	"PersistentVolume":               true,
-	"PersistentVolumeClaim":          true,
-	"Pod":                            true,
-	"PodDisruptionBudget":            true,
-	"PriorityClass":                  true,
-	"ReplicaSet":                     true,
-	"ReplicationController":          true,
-	"ResourceQuota":                  true,
-	"Role":                           true,
-	"RoleBinding":                    true,
-	"Secret":                         true,
-	"Service":                        true,
-	"ServiceAccount":                 true,
-	"StatefulSet":                    true,
-	"StorageClass":                   true,
-	"ValidatingWebhookConfiguration": true,
-}
-
-func IsBroadScrubKind(kind string) bool {
-	return BroadScrubKinds[kind]
-}
 
 func IsCurated(apiVersion, kind string) bool {
 	_, ok := FindByAPIVersionKind(apiVersion, kind)
