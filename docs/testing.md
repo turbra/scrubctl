@@ -29,19 +29,31 @@ An optional `fixture.json` can override test defaults like `secretHandling`, `na
 
 `TestFixturesMatchTSExpectations` in `internal/parity/parity_test.go` auto-discovers all fixture directories and runs each through the full pipeline:
 
-```text
-input.yaml
-   |
-   v
-classify (ClassifyCuratedResource)
-   |--- compared to expected-classification.json
-   v
-sanitize (SanitizeResource)
-   |--- compared to expected-sanitized.yaml
-   v
-archive (BuildScanArchive)
-   '--- compared to expected-archive.json
-```
+<div class="sc-flow-diagram">
+  <div class="sc-flow-step">
+    <span class="sc-flow-kicker">Fixture input</span>
+    <h3>input.yaml</h3>
+    <p>Starts from a realistic cluster-shaped resource with status, defaults, and server-assigned metadata still present.</p>
+  </div>
+  <div class="sc-flow-connector" aria-hidden="true"></div>
+  <div class="sc-flow-step">
+    <span class="sc-flow-kicker">Stage 1</span>
+    <h3>Classify</h3>
+    <p>Runs <code>ClassifyCuratedResource</code> and compares the result to <code>expected-classification.json</code>.</p>
+  </div>
+  <div class="sc-flow-connector" aria-hidden="true"></div>
+  <div class="sc-flow-step">
+    <span class="sc-flow-kicker">Stage 2</span>
+    <h3>Sanitize</h3>
+    <p>Runs <code>SanitizeResource</code> and compares the output to <code>expected-sanitized.yaml</code>.</p>
+  </div>
+  <div class="sc-flow-connector" aria-hidden="true"></div>
+  <div class="sc-flow-step">
+    <span class="sc-flow-kicker">Stage 3</span>
+    <h3>Archive</h3>
+    <p>Runs <code>BuildScanArchive</code> and compares the ZIP structure to <code>expected-archive.json</code>.</p>
+  </div>
+</div>
 
 Each comparison uses `go-cmp/cmp.Diff`. On failure, you get a unified diff showing exactly which fields differ between expected and actual output.
 
@@ -51,21 +63,34 @@ This validates that the classification, sanitization, and archive logic in the b
 
 `TestSanitizationQuality` in `internal/sanitize/sanitize_quality_test.go` is a cross-cutting test that runs every non-excluded fixture input through sanitization and checks invariants that must hold for all output. It catches regressions that golden file comparison alone can miss — for example, a new fixture that accidentally includes `creationTimestamp: null` in both input and expected output.
 
-```text
-all fixture input.yaml files
-        |
-        v
- sanitize_quality_test.go
-        |
-        v
- structural checks          annotation policy checks
- (universal invariants)      (stripped-prefix enforcement)
-        |                           |
-        v                           v
- checkForbiddenMetadata      checkForbiddenAnnotations
- checkNoStatus               (prefix list below)
- walkForbiddenPatterns
-```
+<div class="sc-testing-overview">
+  <div class="sc-testing-overview-card">
+    <span class="sc-flow-kicker">Cross-cutting pass</span>
+    <h3>sanitize_quality_test.go</h3>
+    <p>Runs every non-excluded fixture through a second test layer focused on universal output quality, not fixture-specific golden files.</p>
+  </div>
+</div>
+
+<div class="sc-testing-lanes">
+  <section class="sc-testing-lane">
+    <span class="sc-flow-kicker">Universal invariants</span>
+    <h3>Structural checks</h3>
+    <ul>
+      <li><code>checkForbiddenMetadata</code></li>
+      <li><code>checkNoStatus</code></li>
+      <li><code>walkForbiddenPatterns</code></li>
+    </ul>
+  </section>
+  <section class="sc-testing-lane">
+    <span class="sc-flow-kicker">Policy enforcement</span>
+    <h3>Annotation checks</h3>
+    <ul>
+      <li><code>checkForbiddenAnnotations</code></li>
+      <li>Prefix-based stripping validation</li>
+      <li>Prevents runtime/operator annotation drift</li>
+    </ul>
+  </section>
+</div>
 
 Fixtures classified as `exclude` are skipped.
 
@@ -98,10 +123,20 @@ The sanitizer (`shouldStripAnnotation` in `sanitize.go`) strips these same prefi
 
 The fixture golden files and the quality test serve different purposes:
 
-| Layer | What it checks | Scope |
-|-------|---------------|-------|
-| **Fixture golden files** (parity test) | Exact output for a specific input — classification, sanitized YAML, archive structure | Per-fixture |
-| **Quality test** | Universal invariants that must hold across all fixtures | Cross-cutting |
+<div class="sc-testing-layers">
+  <section class="sc-testing-layer">
+    <span class="sc-flow-kicker">Exact behavior lock</span>
+    <h3>Fixture golden files</h3>
+    <p>Checks exact output for a specific input: classification, sanitized YAML, and archive structure.</p>
+    <p><strong>Scope:</strong> Per-fixture</p>
+  </section>
+  <section class="sc-testing-layer">
+    <span class="sc-flow-kicker">Universal output quality</span>
+    <h3>Quality test</h3>
+    <p>Checks cross-cutting invariants that must hold across all sanitized resources, regardless of fixture shape.</p>
+    <p><strong>Scope:</strong> Cross-cutting</p>
+  </section>
+</div>
 
 A field can be stripped by the sanitizer without being enforced by the quality test. The golden file for that fixture still catches regressions. The quality test only needs to enforce invariants that are universal — things that should never appear in any sanitized output regardless of kind or context.
 
