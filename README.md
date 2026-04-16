@@ -82,6 +82,7 @@ When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resourc
 
 | Flag | Description |
 |------|-------------|
+| `--config` | Path to a config file for default flag values (see [docs](./docs/cli.md#config-file)) |
 | `--kubeconfig` | Path to the kubeconfig file |
 | `--context` | Kubeconfig context to use |
 | `-n, --namespace` | Target namespace |
@@ -93,12 +94,12 @@ When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resourc
 
 ### Resource Scope
 
-`scrubctl` supports a curated set of namespaced resource kinds:
+The `scan`, `export`, and `generate argocd` commands work with a **curated set** of namespaced resource kinds:
 
-- **Kubernetes**: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Role, RoleBinding, ServiceAccount
+- **Kubernetes**: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Ingress, Role, RoleBinding, ServiceAccount, LimitRange, PodDisruptionBudget, ResourceQuota
 - **OpenShift**: Route, BuildConfig, ImageStream, ImageStreamTag
 
-Kinds outside that set are excluded with `kind not in curated resource set`.
+The `scrub` command and stdin pipe mode accept a broader supported set (~32 kinds), including kinds like `Pod`, `Namespace`, `ClusterRole`, and `PersistentVolume`, so you can sanitize a manifest you already selected without making it part of the curated export surface.
 
 ## Related
 

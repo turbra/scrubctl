@@ -33,6 +33,7 @@ Available Commands:
   version     Print the CLI version
 
 Flags:
+      --config string            Path to a config file for default flag values
       --context string           Kubeconfig context to use
       --exclude-kinds string     Comma-separated curated kinds or registry keys to exclude
   -h, --help                     help for scrubctl
@@ -123,6 +124,7 @@ scrubctl version
 
 ## Global flags
 
+- `--config` — path to a config file for default flag values (see [Config file](#config-file))
 - `--kubeconfig` — path to the kubeconfig file
 - `--context` — kubeconfig context to use
 - `-n, --namespace` — target namespace
@@ -134,14 +136,51 @@ scrubctl version
 
 If you do not pass a namespace argument, the CLI falls back to `-n/--namespace` and then the active kubeconfig context namespace.
 
+## Config file
+
+You can define default `includeKinds` and `excludeKinds` in a YAML config file and pass it with `--config`:
+
+```yaml
+# scrubctl.yaml
+includeKinds:
+  - Deployment
+  - Service
+  - ConfigMap
+
+excludeKinds:
+  - Secret
+  - Route
+```
+
+```sh
+scrubctl scan my-app --config scrubctl.yaml
+```
+
+Config is only loaded when `--config` is explicitly provided. There is no auto-discovery from the current directory or home directory.
+
+CLI flags always take precedence over config values. If both `--include-kinds` and `includeKinds` are set, the CLI flag wins:
+
+```sh
+# Uses Deployment,Service from CLI, ignores config includeKinds
+scrubctl scan my-app --config scrubctl.yaml --include-kinds Deployment,Service
+```
+
 ## Resource scope
 
-`scrubctl` supports a curated set of namespaced resource kinds:
+### Curated set (scan / export)
 
-- Kubernetes: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Role, RoleBinding, ServiceAccount
+The `scan`, `export`, and `generate argocd` subcommands work with a curated set of namespaced resource kinds:
+
+- Kubernetes: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Ingress, Role, RoleBinding, ServiceAccount, LimitRange, PodDisruptionBudget, ResourceQuota
 - OpenShift: Route, BuildConfig, ImageStream, ImageStreamTag
 
-Kinds outside that set are excluded with `kind not in curated resource set`.
+Kinds outside that set are excluded with `kind not in curated resource set`. Use `--include-kinds` and `--exclude-kinds` to filter the curated set within these boundaries.
+
+### Broad set (scrub / stdin)
+
+The `scrub` subcommand and stdin pipe mode accept a broader supported set of ~32 resource kinds, since you are explicitly providing the input. In addition to the curated kinds above, direct scrub supports cluster-scoped kinds (`ClusterRole`, `ClusterRoleBinding`, `Namespace`, `PersistentVolume`, `StorageClass`), runtime kinds (`Pod`, `ReplicaSet`, `Endpoints`), and infrastructure kinds (`CustomResourceDefinition`, `ValidatingWebhookConfiguration`, `MutatingWebhookConfiguration`). Resources that would be excluded in a scan context (e.g. controller-owned, runtime-generated) are instead classified as `review` and still sanitized and output.
+
+Direct scrub still uses an explicit supported set rather than accepting arbitrary Kubernetes kinds. Unsupported kinds are rejected.
 
 ## OpenShift and oc
 
