@@ -1,0 +1,21 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: api
+  namespace: demo
+  uid: route-303
+  resourceVersion: "61"
+  creationTimestamp: "2026-04-15T00:00:00Z"
+  managedFields:
+    - manager: openshift-router
+spec:
+  to:
+    kind: Service
+    name: api
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: api.apps.example.com

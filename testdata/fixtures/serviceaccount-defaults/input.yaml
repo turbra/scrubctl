@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-runner
+  namespace: demo
+  uid: sa-202
+  resourceVersion: "14"
+  creationTimestamp: "2026-04-15T00:00:00Z"
+  managedFields:
+    - manager: kube-controller-manager
+secrets:
+  - name: app-runner-token-abc12

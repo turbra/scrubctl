@@ -1,0 +1,8 @@
+{
+  "apiVersion": "v1",
+  "classification": "include",
+  "kind": "ServiceAccount",
+  "name": "app-runner",
+  "namespace": "demo",
+  "reason": "Namespaced access or policy resource is declarative"
+}

@@ -1,0 +1,29 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: api-build
+  namespace: demo
+  uid: bc-404
+  resourceVersion: "72"
+  creationTimestamp: "2026-04-15T00:00:00Z"
+  managedFields:
+    - manager: openshift-controller-manager
+spec:
+  runPolicy: Serial
+  source:
+    type: Git
+    git:
+      uri: https://github.com/example/api
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: nodejs:18
+        namespace: openshift
+  output:
+    to:
+      kind: ImageStreamTag
+      name: api:latest
+status:
+  lastVersion: 5

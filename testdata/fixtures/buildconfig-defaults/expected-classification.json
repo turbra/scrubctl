@@ -1,0 +1,8 @@
+{
+  "apiVersion": "build.openshift.io/v1",
+  "classification": "include",
+  "kind": "BuildConfig",
+  "name": "api-build",
+  "namespace": "demo",
+  "reason": "OpenShift build configuration can be declared directly"
+}

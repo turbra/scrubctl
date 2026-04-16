@@ -1,0 +1,21 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: api-build
+  namespace: demo
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/example/api
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: nodejs:18
+        namespace: openshift
+  output:
+    to:
+      kind: ImageStreamTag
+      name: api:latest

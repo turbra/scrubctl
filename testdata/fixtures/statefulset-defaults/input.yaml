@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+  namespace: demo
+  uid: abc-123
+  resourceVersion: "42"
+  generation: 3
+  creationTimestamp: "2026-04-15T00:00:00Z"
+  managedFields:
+    - manager: kube-controller-manager
+spec:
+  serviceName: db
+  revisionHistoryLimit: 10
+  minReadySeconds: 0
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: db
+    spec:
+      schedulerName: default-scheduler
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      containers:
+        - name: db
+          image: postgres:16
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+status:
+  replicas: 1

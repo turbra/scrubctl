@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: log-agent
+  namespace: demo
+  uid: def-456
+  resourceVersion: "88"
+  generation: 2
+  creationTimestamp: "2026-04-15T00:00:00Z"
+  managedFields:
+    - manager: kube-controller-manager
+spec:
+  revisionHistoryLimit: 10
+  minReadySeconds: 0
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  selector:
+    matchLabels:
+      app: log-agent
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: log-agent
+    spec:
+      schedulerName: default-scheduler
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      containers:
+        - name: agent
+          image: fluentd:latest
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+status:
+  currentNumberScheduled: 3

@@ -1,0 +1,8 @@
+{
+  "apiVersion": "apps/v1",
+  "classification": "include",
+  "kind": "DaemonSet",
+  "name": "log-agent",
+  "namespace": "demo",
+  "reason": "Workload resource is declarative"
+}

@@ -130,6 +130,14 @@ func sanitizeKindSpecificFields(resource types.ResourceObject, secretHandling st
 	switch resource.Kind() {
 	case "Deployment":
 		sanitizeDeploymentDefaults(resource)
+	case "StatefulSet":
+		sanitizeStatefulSetDefaults(resource)
+	case "DaemonSet":
+		sanitizeDaemonSetDefaults(resource)
+	case "Job":
+		sanitizeJobDefaults(resource)
+	case "CronJob":
+		sanitizeCronJobDefaults(resource)
 	case "Secret":
 		sanitizeSecret(resource, secretHandling)
 	case "PersistentVolumeClaim":
@@ -146,6 +154,12 @@ func sanitizeKindSpecificFields(resource types.ResourceObject, secretHandling st
 		if serviceType, found, _ := unstructured.NestedString(resource, "spec", "type"); found && serviceType == "LoadBalancer" {
 			sanitizeServiceAnnotations(resource)
 		}
+	case "ServiceAccount":
+		sanitizeServiceAccountDefaults(resource)
+	case "Route":
+		sanitizeRouteDefaults(resource)
+	case "BuildConfig":
+		sanitizeBuildConfigDefaults(resource)
 	case "ImageStream":
 		unstructured.RemoveNestedField(resource, "spec", "dockerImageRepository")
 	}
@@ -171,6 +185,99 @@ func sanitizeDeploymentDefaults(resource types.ResourceObject) {
 	hasDefaultRolling := foundRolling && rollingUpdate["maxSurge"] == "25%" && rollingUpdate["maxUnavailable"] == "25%"
 	if hasDefaultType && hasDefaultRolling {
 		unstructured.RemoveNestedField(resource, "spec", "strategy")
+	}
+}
+
+func sanitizeStatefulSetDefaults(resource types.ResourceObject) {
+	if numberEquals(resource, 10, "spec", "revisionHistoryLimit") {
+		unstructured.RemoveNestedField(resource, "spec", "revisionHistoryLimit")
+	}
+	if numberEquals(resource, 0, "spec", "minReadySeconds") {
+		unstructured.RemoveNestedField(resource, "spec", "minReadySeconds")
+	}
+	if podMgmt, found, _ := unstructured.NestedString(resource, "spec", "podManagementPolicy"); found && podMgmt == "OrderedReady" {
+		unstructured.RemoveNestedField(resource, "spec", "podManagementPolicy")
+	}
+
+	updateStrategy, found, _ := unstructured.NestedMap(resource, "spec", "updateStrategy")
+	if !found {
+		return
+	}
+	rollingUpdate, foundRolling := updateStrategy["rollingUpdate"].(map[string]any)
+	hasDefaultType := updateStrategy["type"] == "RollingUpdate"
+	hasDefaultRolling := foundRolling && numberEqualsAny(rollingUpdate["partition"], 0)
+	if hasDefaultType && hasDefaultRolling {
+		unstructured.RemoveNestedField(resource, "spec", "updateStrategy")
+	}
+}
+
+func sanitizeDaemonSetDefaults(resource types.ResourceObject) {
+	if numberEquals(resource, 10, "spec", "revisionHistoryLimit") {
+		unstructured.RemoveNestedField(resource, "spec", "revisionHistoryLimit")
+	}
+	if numberEquals(resource, 0, "spec", "minReadySeconds") {
+		unstructured.RemoveNestedField(resource, "spec", "minReadySeconds")
+	}
+
+	updateStrategy, found, _ := unstructured.NestedMap(resource, "spec", "updateStrategy")
+	if !found {
+		return
+	}
+	rollingUpdate, foundRolling := updateStrategy["rollingUpdate"].(map[string]any)
+	hasDefaultType := updateStrategy["type"] == "RollingUpdate"
+	hasDefaultRolling := foundRolling && numberEqualsAny(rollingUpdate["maxUnavailable"], 1) && numberEqualsAny(rollingUpdate["maxSurge"], 0)
+	if hasDefaultType && hasDefaultRolling {
+		unstructured.RemoveNestedField(resource, "spec", "updateStrategy")
+	}
+}
+
+func sanitizeJobDefaults(resource types.ResourceObject) {
+	if numberEquals(resource, 6, "spec", "backoffLimit") {
+		unstructured.RemoveNestedField(resource, "spec", "backoffLimit")
+	}
+	if numberEquals(resource, 1, "spec", "completions") {
+		unstructured.RemoveNestedField(resource, "spec", "completions")
+	}
+	if numberEquals(resource, 1, "spec", "parallelism") {
+		unstructured.RemoveNestedField(resource, "spec", "parallelism")
+	}
+	if completionMode, found, _ := unstructured.NestedString(resource, "spec", "completionMode"); found && completionMode == "NonIndexed" {
+		unstructured.RemoveNestedField(resource, "spec", "completionMode")
+	}
+	if suspend, found, _ := unstructured.NestedBool(resource, "spec", "suspend"); found && !suspend {
+		unstructured.RemoveNestedField(resource, "spec", "suspend")
+	}
+}
+
+func sanitizeCronJobDefaults(resource types.ResourceObject) {
+	if concurrency, found, _ := unstructured.NestedString(resource, "spec", "concurrencyPolicy"); found && concurrency == "Allow" {
+		unstructured.RemoveNestedField(resource, "spec", "concurrencyPolicy")
+	}
+	if suspend, found, _ := unstructured.NestedBool(resource, "spec", "suspend"); found && !suspend {
+		unstructured.RemoveNestedField(resource, "spec", "suspend")
+	}
+	if numberEquals(resource, 3, "spec", "successfulJobsHistoryLimit") {
+		unstructured.RemoveNestedField(resource, "spec", "successfulJobsHistoryLimit")
+	}
+	if numberEquals(resource, 1, "spec", "failedJobsHistoryLimit") {
+		unstructured.RemoveNestedField(resource, "spec", "failedJobsHistoryLimit")
+	}
+	cleanNestedMetadata(resource, "spec", "jobTemplate", "metadata")
+}
+
+func sanitizeServiceAccountDefaults(resource types.ResourceObject) {
+	unstructured.RemoveNestedField(resource, "secrets")
+}
+
+func sanitizeRouteDefaults(resource types.ResourceObject) {
+	if wildcardPolicy, found, _ := unstructured.NestedString(resource, "spec", "wildcardPolicy"); found && wildcardPolicy == "None" {
+		unstructured.RemoveNestedField(resource, "spec", "wildcardPolicy")
+	}
+}
+
+func sanitizeBuildConfigDefaults(resource types.ResourceObject) {
+	if runPolicy, found, _ := unstructured.NestedString(resource, "spec", "runPolicy"); found && runPolicy == "Serial" {
+		unstructured.RemoveNestedField(resource, "spec", "runPolicy")
 	}
 }
 
@@ -211,15 +318,21 @@ func sanitizeServiceAnnotations(resource types.ResourceObject) {
 
 func shouldStripAnnotation(key string) bool {
 	switch key {
-	case "kubectl.kubernetes.io/last-applied-configuration", "deployment.kubernetes.io/revision", "openshift.io/generated-by", "openshift.io/host.generated":
+	case "kubectl.kubernetes.io/last-applied-configuration", "deployment.kubernetes.io/revision",
+		"openshift.io/generated-by", "openshift.io/host.generated", "openshift.io/required-scc":
 		return true
 	default:
-		return hasAnyPrefix(key, "pv.kubernetes.io/", "operator.openshift.io/", "openshift.io/build.")
+		return hasAnyPrefix(key, "pv.kubernetes.io/", "operator.openshift.io/", "openshift.io/build.", "imageregistry.operator.openshift.io/")
 	}
 }
 
 func sanitizePodTemplate(resource types.ResourceObject) {
-	template, found, _ := unstructured.NestedMap(resource, "spec", "template")
+	cleanPodTemplateAt(resource, "spec", "template")
+	cleanPodTemplateAt(resource, "spec", "jobTemplate", "spec", "template")
+}
+
+func cleanPodTemplateAt(resource types.ResourceObject, fields ...string) {
+	template, found, _ := unstructured.NestedMap(resource, fields...)
 	if !found {
 		return
 	}
@@ -232,7 +345,7 @@ func sanitizePodTemplate(resource types.ResourceObject) {
 
 	spec, ok := template["spec"].(map[string]any)
 	if !ok {
-		_ = unstructured.SetNestedMap(resource, template, "spec", "template")
+		_ = unstructured.SetNestedMap(resource, template, fields...)
 		return
 	}
 	if spec["schedulerName"] == "default-scheduler" {
@@ -246,6 +359,9 @@ func sanitizePodTemplate(resource types.ResourceObject) {
 	}
 	if securityContext, ok := spec["securityContext"].(map[string]any); ok && len(securityContext) == 0 {
 		delete(spec, "securityContext")
+	}
+	if affinity, ok := spec["affinity"].(map[string]any); ok && len(affinity) == 0 {
+		delete(spec, "affinity")
 	}
 	if containers, ok := spec["containers"].([]any); ok {
 		for _, containerAny := range containers {
@@ -261,7 +377,20 @@ func sanitizePodTemplate(resource types.ResourceObject) {
 			}
 		}
 	}
-	_ = unstructured.SetNestedMap(resource, template, "spec", "template")
+	_ = unstructured.SetNestedMap(resource, template, fields...)
+}
+
+func cleanNestedMetadata(resource types.ResourceObject, fields ...string) {
+	metadata, found, _ := unstructured.NestedMap(resource, fields...)
+	if !found {
+		return
+	}
+	delete(metadata, "creationTimestamp")
+	if len(metadata) == 0 {
+		unstructured.RemoveNestedField(resource, fields...)
+	} else {
+		_ = unstructured.SetNestedMap(resource, metadata, fields...)
+	}
 }
 
 func isSystemFinalizer(finalizer string) bool {
@@ -275,6 +404,23 @@ func hasAnyPrefix(value string, prefixes ...string) bool {
 		}
 	}
 	return false
+}
+
+func numberEqualsAny(value any, expected float64) bool {
+	switch typed := value.(type) {
+	case int:
+		return float64(typed) == expected
+	case int32:
+		return float64(typed) == expected
+	case int64:
+		return float64(typed) == expected
+	case float32:
+		return float64(typed) == expected
+	case float64:
+		return typed == expected
+	default:
+		return false
+	}
 }
 
 func numberEquals(resource types.ResourceObject, expected float64, fields ...string) bool {

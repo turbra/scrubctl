@@ -1,0 +1,8 @@
+{
+  "apiVersion": "batch/v1",
+  "classification": "include",
+  "kind": "Job",
+  "name": "migrate",
+  "namespace": "demo",
+  "reason": "Workload resource is declarative"
+}
