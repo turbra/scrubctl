@@ -4,6 +4,10 @@ A standalone Go CLI that scans a Kubernetes or OpenShift namespace, classifies r
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-2C7A7B?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0)
 
+## Demo
+
+[Watch the terminal demo](https://turbra.github.io/scrubctl/#demo) on the project site to see `scrubctl` in action.
+
 ## Install
 
 Build from source (requires Go 1.21+):
@@ -92,7 +96,7 @@ Kinds outside that set are excluded with `kind not in curated resource set`.
 ## Documentation
 
 - [Command Reference](./docs/cli.md) — full command details, examples, and local development targets
-- [Project Site](https://turbra.github.io/scrubctl) — documentation home with embedded terminal demo
+- [Project Site](https://turbra.github.io/scrubctl/) — documentation home with install, quick start, and embedded demo
 
 ## Related
 
