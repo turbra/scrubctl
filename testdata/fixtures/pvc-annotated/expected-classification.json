@@ -1,0 +1,8 @@
+{
+  "apiVersion": "v1",
+  "classification": "cleanup",
+  "kind": "PersistentVolumeClaim",
+  "name": "data-db-0",
+  "namespace": "demo",
+  "reason": "Persistent volume binding details need cleanup"
+}

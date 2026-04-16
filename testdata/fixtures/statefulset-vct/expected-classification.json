@@ -1,0 +1,8 @@
+{
+  "apiVersion": "apps/v1",
+  "classification": "include",
+  "kind": "StatefulSet",
+  "name": "db",
+  "namespace": "demo",
+  "reason": "Workload resource is declarative"
+}

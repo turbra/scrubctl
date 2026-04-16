@@ -1,0 +1,8 @@
+{
+  "apiVersion": "batch/v1",
+  "classification": "include",
+  "kind": "CronJob",
+  "name": "db-backup",
+  "namespace": "demo",
+  "reason": "Workload resource is declarative"
+}

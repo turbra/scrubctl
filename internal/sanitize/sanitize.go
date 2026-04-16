@@ -200,14 +200,41 @@ func sanitizeStatefulSetDefaults(resource types.ResourceObject) {
 	}
 
 	updateStrategy, found, _ := unstructured.NestedMap(resource, "spec", "updateStrategy")
+	if found {
+		rollingUpdate, foundRolling := updateStrategy["rollingUpdate"].(map[string]any)
+		hasDefaultType := updateStrategy["type"] == "RollingUpdate"
+		hasDefaultRolling := foundRolling && numberEqualsAny(rollingUpdate["partition"], 0)
+		if hasDefaultType && hasDefaultRolling {
+			unstructured.RemoveNestedField(resource, "spec", "updateStrategy")
+		}
+	}
+
+	sanitizeVolumeClaimTemplates(resource)
+}
+
+func sanitizeVolumeClaimTemplates(resource types.ResourceObject) {
+	vcts, found, _ := unstructured.NestedSlice(resource, "spec", "volumeClaimTemplates")
 	if !found {
 		return
 	}
-	rollingUpdate, foundRolling := updateStrategy["rollingUpdate"].(map[string]any)
-	hasDefaultType := updateStrategy["type"] == "RollingUpdate"
-	hasDefaultRolling := foundRolling && numberEqualsAny(rollingUpdate["partition"], 0)
-	if hasDefaultType && hasDefaultRolling {
-		unstructured.RemoveNestedField(resource, "spec", "updateStrategy")
+	changed := false
+	for _, vctAny := range vcts {
+		vct, ok := vctAny.(map[string]any)
+		if !ok {
+			continue
+		}
+		if metadata, ok := vct["metadata"].(map[string]any); ok {
+			if _, has := metadata["creationTimestamp"]; has {
+				delete(metadata, "creationTimestamp")
+				changed = true
+				if len(metadata) == 0 {
+					delete(vct, "metadata")
+				}
+			}
+		}
+	}
+	if changed {
+		_ = unstructured.SetNestedSlice(resource, vcts, "spec", "volumeClaimTemplates")
 	}
 }
 
@@ -263,6 +290,30 @@ func sanitizeCronJobDefaults(resource types.ResourceObject) {
 		unstructured.RemoveNestedField(resource, "spec", "failedJobsHistoryLimit")
 	}
 	cleanNestedMetadata(resource, "spec", "jobTemplate", "metadata")
+	sanitizeNestedJobDefaults(resource, "spec", "jobTemplate", "spec")
+}
+
+func sanitizeNestedJobDefaults(resource types.ResourceObject, fields ...string) {
+	jobSpec, found, _ := unstructured.NestedMap(resource, fields...)
+	if !found {
+		return
+	}
+	if numberEqualsAny(jobSpec["backoffLimit"], 6) {
+		delete(jobSpec, "backoffLimit")
+	}
+	if numberEqualsAny(jobSpec["completions"], 1) {
+		delete(jobSpec, "completions")
+	}
+	if numberEqualsAny(jobSpec["parallelism"], 1) {
+		delete(jobSpec, "parallelism")
+	}
+	if jobSpec["completionMode"] == "NonIndexed" {
+		delete(jobSpec, "completionMode")
+	}
+	if suspend, ok := jobSpec["suspend"].(bool); ok && !suspend {
+		delete(jobSpec, "suspend")
+	}
+	_ = unstructured.SetNestedMap(resource, jobSpec, fields...)
 }
 
 func sanitizeServiceAccountDefaults(resource types.ResourceObject) {
@@ -322,7 +373,7 @@ func shouldStripAnnotation(key string) bool {
 		"openshift.io/generated-by", "openshift.io/host.generated", "openshift.io/required-scc":
 		return true
 	default:
-		return hasAnyPrefix(key, "pv.kubernetes.io/", "operator.openshift.io/", "openshift.io/build.", "imageregistry.operator.openshift.io/")
+		return hasAnyPrefix(key, "pv.kubernetes.io/", "operator.openshift.io/", "openshift.io/build.", "imageregistry.operator.openshift.io/", "volume.beta.kubernetes.io/", "volume.kubernetes.io/")
 	}
 }
 
