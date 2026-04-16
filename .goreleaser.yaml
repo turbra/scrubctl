@@ -1,0 +1,48 @@
+version: 2
+
+project_name: scrubctl
+
+builds:
+  - id: scrubctl
+    main: ./cmd/scrubctl
+    binary: scrubctl
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .Commit }}
+      - -X main.buildDate={{ .Date }}
+
+archives:
+  - id: cli
+    ids:
+      - scrubctl
+    name_template: "scrubctl-{{ .Tag }}-{{ .Os }}-{{ .Arch }}"
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    wrap_in_directory: false
+    files:
+      - src: LICENSE
+      - src: README.md
+      - src: docs/cli.md
+
+checksum:
+  name_template: checksums.txt
+
+sboms:
+  - artifacts: archive
+
+release:
+  prerelease: auto

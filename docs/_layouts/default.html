@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% seo %}
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+    {% include head-custom.html %}
+  </head>
+  <body>
+    <a class="sc-skip-link" href="#main-content">Skip to content</a>
+    <div class="sc-site-shell">
+      <header class="sc-site-header">
+        <div class="sc-site-header-inner">
+          <p class="sc-eyebrow">scrubctl Project Pages</p>
+          <div class="sc-site-brand">
+            <div>
+              <p class="sc-site-brand-title">
+                <a href="{{ '/' | relative_url }}">scrubctl</a>
+              </p>
+              <p class="sc-site-brand-tagline">{{ site.description }}</p>
+            </div>
+          </div>
+          <div class="sc-site-header-actions">
+            {% unless page.url == '/' or page.url == '/index.html' %}
+            <a href="{{ '/' | relative_url }}"><kbd>DOCS HOME</kbd></a>
+            {% endunless %}
+            {% unless page.url == '/cli.html' %}
+            <a href="{{ '/cli.html' | relative_url }}"><kbd>COMMAND REFERENCE</kbd></a>
+            {% endunless %}
+            <a href="https://github.com/turbra/scrubctl"><kbd>REPOSITORY</kbd></a>
+          </div>
+        </div>
+      </header>
+
+      <main id="main-content" class="sc-page-shell">
+        <div class="sc-content-column">
+          <article class="markdown-body">
+            {{ content }}
+          </article>
+        </div>
+
+        <aside class="sc-side-column">
+          <section class="sc-page-toc" id="sc-page-toc" hidden>
+            <h2 class="sc-page-toc-title" id="sc-on-this-page-title">On This Page</h2>
+            <ol
+              class="sc-toc-list"
+              id="sc-toc-list"
+              aria-labelledby="sc-on-this-page-title"
+            ></ol>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="sc-site-footer">
+        Generated from repository docs on {{ site.time | date: "%Y-%m-%d" }}.
+      </footer>
+    </div>
+  </body>
+</html>

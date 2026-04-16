@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: public-api
+  namespace: demo
+  annotations:
+    example.com/keep: 'yes'
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  selector:
+    app: public-api

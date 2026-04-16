@@ -1,0 +1,9 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStreamTag
+metadata:
+  name: web:latest
+  namespace: demo
+tag:
+  from:
+    kind: DockerImage
+    name: quay.io/example/web:latest

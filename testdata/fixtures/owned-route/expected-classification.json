@@ -1,0 +1,8 @@
+{
+  "apiVersion": "route.openshift.io/v1",
+  "classification": "exclude",
+  "kind": "Route",
+  "name": "web",
+  "namespace": "demo",
+  "reason": "Controller-owned resource"
+}

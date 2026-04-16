@@ -1,1 +1,103 @@
 # scrubctl
+
+A standalone Go CLI that scans a Kubernetes or OpenShift namespace, classifies resources, sanitizes live manifests, and exports GitOps-ready artifacts. Use it in terminal workflows or CI/CD pipelines where the web console is not available.
+
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-2C7A7B?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0)
+
+## Install
+
+Build from source (requires Go 1.21+):
+
+```sh
+go build -o scrubctl ./cmd/scrubctl
+sudo mv scrubctl /usr/local/bin/
+scrubctl version
+```
+
+Or with `go install`:
+
+```sh
+go install github.com/turbra/scrubctl/cmd/scrubctl@latest
+```
+
+The binary lands in `$(go env GOBIN)` if set, otherwise `$(go env GOPATH)/bin` (typically `~/go/bin`). Make sure that directory is on your `PATH`.
+
+### Install from a release archive
+
+Download the archive matching your OS and architecture from the [GitHub Releases page](https://github.com/turbra/scrubctl/releases) (Linux, macOS, Windows — amd64 and arm64):
+
+```sh
+tar -xzf scrubctl-<version>-<os>-<arch>.tar.gz
+sudo mv scrubctl /usr/local/bin/
+scrubctl version
+```
+
+## Quick Start
+
+```sh
+# Scrub a single resource file — no cluster access needed
+scrubctl scrub -f deployment.yaml
+
+# Pipe a live resource through scrubctl
+oc get deploy/web -n my-app -o yaml | scrubctl
+
+# Scan a namespace and print the classification table
+scrubctl scan my-app
+
+# Export a namespace as a ZIP archive
+scrubctl export my-app -o ./out
+
+# Generate an Argo CD Application manifest
+scrubctl generate argocd my-app \
+  --repo-url https://github.com/example/repo.git \
+  --revision main \
+  --path manifests/overlays/install
+```
+
+When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resource directly.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `scrub` | Scrub a single YAML resource from file or stdin |
+| `scan` | Scan a namespace and print the classification table |
+| `export` | Export a namespace scan as a ZIP archive |
+| `generate argocd` | Generate an Argo CD Application manifest |
+| `version` | Print the CLI version |
+| `completion` | Generate shell autocompletion scripts |
+
+## Global Flags
+
+| Flag | Description |
+|------|-------------|
+| `--kubeconfig` | Path to the kubeconfig file |
+| `--context` | Kubeconfig context to use |
+| `-n, --namespace` | Target namespace |
+| `--secret-handling` | Secret handling mode: `redact`, `omit`, or `include` (default: `redact`) |
+| `--include-kinds` | Comma-separated curated kinds to include |
+| `--exclude-kinds` | Comma-separated curated kinds to exclude |
+| `-q, --quiet` | Suppress non-essential output |
+| `--log-level` | Log level (default: `info`) |
+
+## Resource Scope
+
+`scrubctl` supports a curated set of namespaced resource kinds:
+
+- **Kubernetes**: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Role, RoleBinding, ServiceAccount
+- **OpenShift**: Route, BuildConfig, ImageStream, ImageStreamTag
+
+Kinds outside that set are excluded with `kind not in curated resource set`.
+
+## Documentation
+
+- [Command Reference](./docs/cli.md) — full command details, examples, and local development targets
+- [Project Site](https://turbra.github.io/scrubctl) — documentation home with embedded terminal demo
+
+## Related
+
+`scrubctl` shares classification and sanitization logic with the [GitOps Export](https://github.com/turbra/gitops-export-plugin) OpenShift console plugin. Both tools produce identical output for the same input — verified by shared golden test fixtures.
+
+## License
+
+[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)

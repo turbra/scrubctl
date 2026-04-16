@@ -1,0 +1,8 @@
+{
+  "apiVersion": "apps.openshift.io/v1",
+  "classification": "exclude",
+  "kind": "DeploymentConfig",
+  "name": "legacy-app",
+  "namespace": "demo",
+  "reason": "kind not in curated resource set"
+}

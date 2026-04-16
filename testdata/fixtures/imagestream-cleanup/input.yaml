@@ -1,0 +1,9 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: web
+  namespace: demo
+spec:
+  dockerImageRepository: image-registry.openshift-image-registry.svc:5000/demo/web
+  lookupPolicy:
+    local: false

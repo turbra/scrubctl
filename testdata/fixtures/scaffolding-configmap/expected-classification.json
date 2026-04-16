@@ -1,0 +1,8 @@
+{
+  "apiVersion": "v1",
+  "classification": "exclude",
+  "kind": "ConfigMap",
+  "name": "kube-root-ca.crt",
+  "namespace": "demo",
+  "reason": "OpenShift-injected namespace scaffolding"
+}

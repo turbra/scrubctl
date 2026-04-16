@@ -1,0 +1,8 @@
+{
+  "apiVersion": "apps/v1",
+  "classification": "include",
+  "kind": "Deployment",
+  "name": "web",
+  "namespace": "demo",
+  "reason": "Workload resource is declarative"
+}

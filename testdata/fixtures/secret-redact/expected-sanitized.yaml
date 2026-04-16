@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: database
+  namespace: demo
+type: Opaque
+data:
+  password: <REDACTED>
+stringData:
+  username: <REDACTED>

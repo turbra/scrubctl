@@ -1,0 +1,10 @@
+bin/
+scrubctl
+dist/
+*.exe
+*.test
+*.out
+.idea/
+.vscode/
+*.swp
+*.swo

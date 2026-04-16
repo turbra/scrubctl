@@ -1,0 +1,8 @@
+{
+  "apiVersion": "route.openshift.io/v1",
+  "classification": "include",
+  "kind": "Route",
+  "name": "web",
+  "namespace": "demo",
+  "reason": "OpenShift route can be declared directly"
+}

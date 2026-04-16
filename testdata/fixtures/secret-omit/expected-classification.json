@@ -1,0 +1,8 @@
+{
+  "apiVersion": "v1",
+  "classification": "review",
+  "kind": "Secret",
+  "name": "skip-me",
+  "namespace": "demo",
+  "reason": "Secret values require review or redaction"
+}

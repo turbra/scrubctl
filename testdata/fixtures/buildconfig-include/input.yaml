@@ -1,0 +1,17 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: web-build
+  namespace: demo
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/example/web
+  strategy:
+    type: Docker
+    dockerStrategy: {}
+  output:
+    to:
+      kind: ImageStreamTag
+      name: web:latest

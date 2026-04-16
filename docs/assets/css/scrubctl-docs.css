@@ -1,0 +1,427 @@
+:root {
+  color-scheme: light;
+  --sc-red: #ee0000;
+  --sc-red-dark: #a30000;
+  --sc-blue: #0066cc;
+  --sc-teal: #005f60;
+  --sc-ink: #151515;
+  --sc-ink-muted: #4d4d4d;
+  --sc-ink-soft: #6a6e73;
+  --sc-border: #e0e0e0;
+  --sc-border-strong: #c7c7c7;
+  --sc-surface: #ffffff;
+  --sc-surface-alt: #f5f5f5;
+  --sc-max-width: 1360px;
+  --sc-body-width: 860px;
+  --sc-sidebar-width: 260px;
+  --sc-shadow: 0 18px 50px rgba(21, 21, 21, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(238, 0, 0, 0.07), transparent 26rem),
+    radial-gradient(circle at top right, rgba(0, 95, 96, 0.08), transparent 28rem),
+    linear-gradient(180deg, #fffdfb 0, #ffffff 20rem);
+  color: var(--sc-ink);
+  font-family: "Red Hat Text", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+}
+
+a {
+  color: var(--sc-blue);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
+a:hover,
+a:focus {
+  color: var(--sc-red-dark);
+}
+
+.container-lg,
+.container-md {
+  max-width: var(--sc-max-width) !important;
+  padding-right: 2rem !important;
+  padding-left: 2rem !important;
+}
+
+.sc-skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 20;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  background: var(--sc-red);
+  text-decoration: none;
+}
+
+.sc-skip-link:focus {
+  top: 1rem;
+}
+
+.sc-site-shell {
+  min-height: 100vh;
+  position: relative;
+}
+
+.sc-site-header {
+  position: relative;
+  border-top: 4px solid var(--sc-red);
+  border-bottom: 1px solid var(--sc-border);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+}
+
+.sc-site-header-inner,
+.sc-page-shell,
+.sc-site-footer {
+  max-width: var(--sc-max-width);
+  margin: 0 auto;
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
+
+.sc-site-header-inner {
+  padding-top: 1.25rem;
+  padding-bottom: 1rem;
+}
+
+.sc-eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--sc-ink-soft);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sc-site-brand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.sc-site-brand-title {
+  margin: 0;
+  font-family: "Red Hat Display", "Red Hat Text", Arial, sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.7rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.sc-site-brand-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sc-site-brand-title a:hover,
+.sc-site-brand-title a:focus {
+  color: var(--sc-red-dark);
+}
+
+.sc-site-brand-tagline {
+  max-width: 68ch;
+  margin: 0.45rem 0 0;
+  color: var(--sc-ink-muted);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.sc-site-header-actions,
+.sc-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sc-badge-row img,
+.sc-badge-row a {
+  display: block;
+  line-height: 0;
+}
+
+.sc-site-header-actions {
+  margin-top: 0.85rem;
+}
+
+.sc-site-header-actions a {
+  text-decoration: none;
+}
+
+.sc-site-header-actions kbd,
+.markdown-body a kbd,
+.markdown-body kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.35rem;
+  margin: 0.2rem 0.35rem 0.2rem 0;
+  padding: 0.42rem 0.82rem;
+  color: var(--sc-ink);
+  background: var(--sc-surface);
+  border: 1px solid var(--sc-ink-muted);
+  border-radius: 0;
+  box-shadow: none;
+  font-family: "Red Hat Text", Arial, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: normal;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.sc-site-header-actions kbd:hover,
+.sc-site-header-actions kbd:focus,
+.markdown-body a kbd:hover,
+.markdown-body a kbd:focus,
+.markdown-body kbd:hover,
+.markdown-body kbd:focus {
+  color: #ffffff;
+  background: var(--sc-red);
+  border-color: var(--sc-red);
+}
+
+.sc-page-shell {
+  display: grid;
+  grid-template-columns:
+    minmax(0, var(--sc-body-width))
+    minmax(220px, var(--sc-sidebar-width));
+  gap: 3rem;
+  align-items: start;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.sc-content-column,
+.sc-side-column {
+  min-width: 0;
+}
+
+.markdown-body {
+  max-width: 100%;
+  margin: 0;
+  color: var(--sc-ink);
+  background: transparent;
+  font-family: "Red Hat Text", "Helvetica Neue", Arial, sans-serif;
+}
+
+.markdown-body > :first-child {
+  margin-top: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  color: var(--sc-ink);
+  font-family: "Red Hat Display", "Red Hat Text", Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.markdown-body h1 {
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  padding-top: 0.3rem;
+  border: 0;
+  font-size: clamp(2.4rem, 5vw, 4.15rem);
+  line-height: 1.04;
+}
+
+.markdown-body h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding: 0;
+  border: 0;
+  color: var(--sc-red);
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+}
+
+.markdown-body h3 {
+  margin-top: 1.9rem;
+  font-size: 1.3rem;
+}
+
+.markdown-body p,
+.markdown-body li,
+.markdown-body td,
+.markdown-body th {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body blockquote,
+.sc-badge-row {
+  margin-bottom: 1.25rem;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.25rem;
+}
+
+.markdown-body li + li {
+  margin-top: 0.25rem;
+}
+
+.markdown-body hr {
+  height: 1px;
+  margin: 2rem 0;
+  background: var(--sc-border);
+  border: 0;
+}
+
+.markdown-body table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--sc-border);
+  vertical-align: top;
+}
+
+.markdown-body table th {
+  background: var(--sc-surface-alt);
+  font-weight: 700;
+  text-align: left;
+}
+
+.markdown-body pre,
+.markdown-body code {
+  font-family: "Red Hat Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+.markdown-body pre {
+  padding: 1rem 1.1rem;
+  overflow: auto;
+  color: var(--sc-ink);
+  background: #fffaf7;
+  border: 1px solid var(--sc-border);
+  border-left: 4px solid var(--sc-red);
+  border-radius: 0;
+}
+
+.markdown-body code {
+  padding: 0.12rem 0.28rem;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 0.2rem;
+}
+
+.markdown-body pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.markdown-body blockquote {
+  margin-left: 0;
+  padding: 0.9rem 1.05rem;
+  color: var(--sc-ink-muted);
+  border-left: 4px solid var(--sc-red);
+  background: #fffaf8;
+}
+
+.sc-page-toc {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--sc-border);
+  box-shadow: var(--sc-shadow);
+}
+
+.sc-page-toc-title {
+  margin: 0 0 0.75rem;
+  color: var(--sc-ink);
+  font-family: "Red Hat Display", "Red Hat Text", Arial, sans-serif;
+  font-size: 1rem;
+}
+
+.sc-toc-list {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.sc-toc-list li + li {
+  margin-top: 0.45rem;
+}
+
+.sc-toc-list a {
+  color: var(--sc-ink-muted);
+  text-decoration: none;
+}
+
+.sc-toc-list a:hover,
+.sc-toc-list a:focus {
+  color: var(--sc-red-dark);
+  text-decoration: underline;
+}
+
+.sc-site-footer {
+  padding-top: 1rem;
+  padding-bottom: 2.5rem;
+  color: var(--sc-ink-soft);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 1040px) {
+  .sc-page-shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .sc-side-column {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .container-lg,
+  .container-md,
+  .sc-site-header-inner,
+  .sc-page-shell,
+  .sc-site-footer {
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+  }
+
+  .sc-site-brand-title {
+    font-size: 2.45rem;
+  }
+}

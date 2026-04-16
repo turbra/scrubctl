@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: web
+  namespace: demo
+  ownerReferences:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: web
+      uid: abcde
+spec:
+  host: web.apps.example.com
+  to:
+    kind: Service
+    name: web

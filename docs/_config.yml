@@ -1,0 +1,19 @@
+title: "scrubctl"
+description: >-
+  Standalone Go CLI for namespace scan, resource classification, manifest
+  sanitization, ZIP export, and Argo CD Application generation.
+url: "https://turbra.github.io"
+baseurl: "/scrubctl"
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+markdown: kramdown
+kramdown:
+  input: GFM
+defaults:
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: default
