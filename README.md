@@ -60,7 +60,12 @@ scrubctl generate argocd my-app \
 
 When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resource directly.
 
-## Commands
+## Documentation
+
+- [Command Reference](./docs/cli.md) — full command details, examples, and local development targets
+- [Project Site](https://turbra.github.io/scrubctl/) — documentation home with install, quick start, and embedded demo
+
+## Commands at a Glance
 
 | Command | Description |
 |---------|-------------|
@@ -71,7 +76,7 @@ When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resourc
 | `version` | Print the CLI version |
 | `completion` | Generate shell autocompletion scripts |
 
-## Global Flags
+### Global Flags
 
 | Flag | Description |
 |------|-------------|
@@ -84,7 +89,7 @@ When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resourc
 | `-q, --quiet` | Suppress non-essential output |
 | `--log-level` | Log level (default: `info`) |
 
-## Resource Scope
+### Resource Scope
 
 `scrubctl` supports a curated set of namespaced resource kinds:
 
@@ -92,11 +97,6 @@ When invoked with no subcommand and YAML on stdin, `scrubctl` scrubs the resourc
 - **OpenShift**: Route, BuildConfig, ImageStream, ImageStreamTag
 
 Kinds outside that set are excluded with `kind not in curated resource set`.
-
-## Documentation
-
-- [Command Reference](./docs/cli.md) — full command details, examples, and local development targets
-- [Project Site](https://turbra.github.io/scrubctl/) — documentation home with install, quick start, and embedded demo
 
 ## Related
 
