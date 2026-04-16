@@ -29,7 +29,7 @@ An optional `fixture.json` can override test defaults like `secretHandling`, `na
 
 `TestFixturesMatchTSExpectations` in `internal/parity/parity_test.go` auto-discovers all fixture directories and runs each through the full pipeline:
 
-```
+```text
 input.yaml
    |
    v
@@ -47,26 +47,63 @@ Each comparison uses `go-cmp/cmp.Diff`. On failure, you get a unified diff showi
 
 This validates that the classification, sanitization, and archive logic in the binary produces the expected output for each scenario. The fixture files themselves are inert test assets.
 
-## Sanitization quality tests
+## Sanitization quality test
 
-`TestSanitizationQuality` in `internal/sanitize/sanitize_quality_test.go` is a separate cross-cutting test. It runs against all fixture inputs and checks universal invariants that should hold for every sanitized resource:
+`TestSanitizationQuality` in `internal/sanitize/sanitize_quality_test.go` is a cross-cutting test that runs every non-excluded fixture input through sanitization and checks invariants that must hold for all output. It catches regressions that golden file comparison alone can miss — for example, a new fixture that accidentally includes `creationTimestamp: null` in both input and expected output.
 
-```
+```text
 all fixture input.yaml files
-   |
-   v
-sanitize_quality_test.go
-   |
-   v
-cross-cutting checks:
- - no metadata.uid, resourceVersion, generation, creationTimestamp, managedFields, selfLink, ownerReferences
- - no forbidden annotation prefixes (pv.kubernetes.io/, volume.beta.kubernetes.io/, operator.openshift.io/, etc.)
- - no status field
- - no nested creationTimestamp: null anywhere in the tree
- - no empty securityContext: {} or affinity: {} maps
+        |
+        v
+ sanitize_quality_test.go
+        |
+        v
+ structural checks          annotation policy checks
+ (universal invariants)      (stripped-prefix enforcement)
+        |                           |
+        v                           v
+ checkForbiddenMetadata      checkForbiddenAnnotations
+ checkNoStatus               (prefix list below)
+ walkForbiddenPatterns
 ```
 
-Fixtures classified as `exclude` are skipped. This test catches cleanup regressions that golden file comparison alone might miss — for example, a new fixture that accidentally includes `creationTimestamp: null` in both input and expected output.
+Fixtures classified as `exclude` are skipped.
+
+### Structural invariants
+
+These are universal guarantees — every sanitized resource must satisfy them regardless of kind:
+
+- **No server-assigned metadata:** `uid`, `resourceVersion`, `generation`, `creationTimestamp`, `managedFields`, `selfLink`, `ownerReferences`
+- **No status field**
+- **No nested `creationTimestamp: null`** anywhere in the object tree (catches `metadata.creationTimestamp` in embedded templates and volume claim templates)
+- **No empty `securityContext: {}` or `affinity: {}` maps** (Kubernetes API defaults these to empty; they add noise to manifests)
+
+### Annotation policy checks
+
+The quality test also enforces that certain annotation prefixes never appear in sanitized output. Unlike structural invariants, these are policy decisions about which runtime/operator annotations should be stripped. The current enforced prefixes:
+
+| Prefix | Why stripped |
+|--------|-------------|
+| `kubectl.kubernetes.io/last-applied-configuration` | Client-side apply bookkeeping |
+| `pv.kubernetes.io/` | Volume provisioner runtime state |
+| `volume.beta.kubernetes.io/` | Legacy volume annotations |
+| `volume.kubernetes.io/` | Volume runtime annotations |
+| `operator.openshift.io/` | OpenShift operator bookkeeping |
+| `openshift.io/build.` | OpenShift build annotations |
+| `imageregistry.operator.openshift.io/` | Image registry operator state |
+
+The sanitizer (`shouldStripAnnotation` in `sanitize.go`) strips these same prefixes plus additional exact-match annotations (`deployment.kubernetes.io/revision`, `openshift.io/generated-by`, `openshift.io/host.generated`, `openshift.io/required-scc`) that are not yet enforced by the quality test. Adding a prefix to the quality test means every fixture must comply — do so only when the stripping rule is universal and intentional.
+
+### Two layers of testing
+
+The fixture golden files and the quality test serve different purposes:
+
+| Layer | What it checks | Scope |
+|-------|---------------|-------|
+| **Fixture golden files** (parity test) | Exact output for a specific input — classification, sanitized YAML, archive structure | Per-fixture |
+| **Quality test** | Universal invariants that must hold across all fixtures | Cross-cutting |
+
+A field can be stripped by the sanitizer without being enforced by the quality test. The golden file for that fixture still catches regressions. The quality test only needs to enforce invariants that are universal — things that should never appear in any sanitized output regardless of kind or context.
 
 ## When to add a new fixture
 
