@@ -46,8 +46,63 @@ function buildPageToc() {
   tocWrapper.hidden = false;
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", buildPageToc, { once: true });
-} else {
+function upgradeMermaidBlocks() {
+  const mermaidCodeBlocks = document.querySelectorAll(
+    ".markdown-body pre > code.language-mermaid, .markdown-body pre > code.lang-mermaid"
+  );
+
+  for (const codeBlock of mermaidCodeBlocks) {
+    const pre = codeBlock.parentElement;
+    if (!pre || !pre.parentElement) {
+      continue;
+    }
+
+    const mermaidContainer = document.createElement("div");
+    mermaidContainer.className = "mermaid";
+    mermaidContainer.textContent = codeBlock.textContent.trim();
+    pre.replaceWith(mermaidContainer);
+  }
+}
+
+async function renderMermaidDiagrams() {
+  upgradeMermaidBlocks();
+
+  if (!document.querySelector(".markdown-body .mermaid")) {
+    return;
+  }
+
+  const mermaid = await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+  mermaid.default.initialize({
+    startOnLoad: false,
+    theme: "base",
+    themeVariables: {
+      primaryColor: "#ffffff",
+      primaryTextColor: "#151515",
+      primaryBorderColor: "#c7c7c7",
+      lineColor: "#ee0000",
+      secondaryColor: "#f5f5f5",
+      tertiaryColor: "#fffaf7",
+      fontFamily: "Red Hat Text, Helvetica Neue, Arial, sans-serif",
+    },
+    flowchart: {
+      curve: "linear",
+      htmlLabels: true,
+    },
+  });
+  await mermaid.default.run({
+    querySelector: ".markdown-body .mermaid",
+  });
+}
+
+async function initializeDocs() {
   buildPageToc();
+  await renderMermaidDiagrams();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    void initializeDocs();
+  }, { once: true });
+} else {
+  void initializeDocs();
 }
