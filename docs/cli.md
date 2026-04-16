@@ -167,12 +167,20 @@ scrubctl scan my-app --config scrubctl.yaml --include-kinds Deployment,Service
 
 ## Resource scope
 
-`scrubctl` supports a curated set of namespaced resource kinds:
+### Curated set (scan / export)
 
-- Kubernetes: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Role, RoleBinding, ServiceAccount
+The `scan`, `export`, and `generate argocd` subcommands work with a curated set of namespaced resource kinds:
+
+- Kubernetes: Deployment, StatefulSet, DaemonSet, Job, CronJob, Service, Secret, ConfigMap, PersistentVolumeClaim, NetworkPolicy, HorizontalPodAutoscaler, Ingress, Role, RoleBinding, ServiceAccount, LimitRange, PodDisruptionBudget, ResourceQuota
 - OpenShift: Route, BuildConfig, ImageStream, ImageStreamTag
 
-Kinds outside that set are excluded with `kind not in curated resource set`.
+Kinds outside that set are excluded with `kind not in curated resource set`. Use `--include-kinds` and `--exclude-kinds` to narrow or widen the curated set within these boundaries.
+
+### Broad set (scrub / stdin)
+
+The `scrub` subcommand and stdin pipe mode accept a broader set of resource kinds, since you are explicitly providing the input. This includes cluster-scoped kinds like ClusterRole, Namespace, PersistentVolume, and runtime kinds like Pod and ReplicaSet. Resources that would be excluded in a scan context (e.g. controller-owned, runtime-generated) are instead classified as `review` and still sanitized and output.
+
+Unsupported kinds are rejected with `kind not supported for direct scrub`.
 
 ## OpenShift and oc
 

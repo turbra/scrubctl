@@ -289,7 +289,7 @@ func runScrub(cmd *cobra.Command, root *rootOptions, file string) error {
 	if err != nil {
 		return err
 	}
-	classificationResult := classify.ClassifyCuratedResource(resource)
+	classificationResult := classify.ClassifyForDirectScrub(resource)
 	if classificationResult.Classification == types.ClassificationExclude {
 		return fmt.Errorf("%s/%s: %s", classificationResult.Kind, classificationResult.Name, classificationResult.Reason)
 	}

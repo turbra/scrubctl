@@ -42,6 +42,10 @@ var ResourceTypeOptions = []ResourceTypeOption{
 	{Key: "rbac.authorization.k8s.io/v1/Role", Label: "Role", Group: "rbac.authorization.k8s.io", Version: "v1", Kind: "Role", Plural: "roles"},
 	{Key: "rbac.authorization.k8s.io/v1/RoleBinding", Label: "RoleBinding", Group: "rbac.authorization.k8s.io", Version: "v1", Kind: "RoleBinding", Plural: "rolebindings"},
 	{Key: "v1/ServiceAccount", Label: "ServiceAccount", Version: "v1", Kind: "ServiceAccount", Plural: "serviceaccounts"},
+	{Key: "networking.k8s.io/v1/Ingress", Label: "Ingress", Group: "networking.k8s.io", Version: "v1", Kind: "Ingress", Plural: "ingresses", SelectedByDefault: true},
+	{Key: "v1/LimitRange", Label: "LimitRange", Version: "v1", Kind: "LimitRange", Plural: "limitranges"},
+	{Key: "policy/v1/PodDisruptionBudget", Label: "PodDisruptionBudget", Group: "policy", Version: "v1", Kind: "PodDisruptionBudget", Plural: "poddisruptionbudgets"},
+	{Key: "v1/ResourceQuota", Label: "ResourceQuota", Version: "v1", Kind: "ResourceQuota", Plural: "resourcequotas"},
 }
 
 func DefaultResourceTypeKeys() []string {
@@ -74,6 +78,45 @@ func ToGVK(option ResourceTypeOption) types.GroupVersionKind {
 		Version: option.Version,
 		Kind:    option.Kind,
 	}
+}
+
+var BroadScrubKinds = map[string]bool{
+	"APIService":                     true,
+	"ClusterRole":                    true,
+	"ClusterRoleBinding":             true,
+	"ConfigMap":                      true,
+	"CronJob":                        true,
+	"CustomResourceDefinition":       true,
+	"DaemonSet":                      true,
+	"Deployment":                     true,
+	"Endpoints":                      true,
+	"HorizontalPodAutoscaler":        true,
+	"Ingress":                        true,
+	"Job":                            true,
+	"LimitRange":                     true,
+	"MutatingWebhookConfiguration":   true,
+	"Namespace":                      true,
+	"NetworkPolicy":                  true,
+	"PersistentVolume":               true,
+	"PersistentVolumeClaim":          true,
+	"Pod":                            true,
+	"PodDisruptionBudget":            true,
+	"PriorityClass":                  true,
+	"ReplicaSet":                     true,
+	"ReplicationController":          true,
+	"ResourceQuota":                  true,
+	"Role":                           true,
+	"RoleBinding":                    true,
+	"Secret":                         true,
+	"Service":                        true,
+	"ServiceAccount":                 true,
+	"StatefulSet":                    true,
+	"StorageClass":                   true,
+	"ValidatingWebhookConfiguration": true,
+}
+
+func IsBroadScrubKind(kind string) bool {
+	return BroadScrubKinds[kind]
 }
 
 func IsCurated(apiVersion, kind string) bool {

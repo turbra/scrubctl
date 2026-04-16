@@ -16,6 +16,53 @@ func ClassifyCuratedResource(resource types.ResourceObject) types.ResourceClassi
 	return ClassifyResource(resource)
 }
 
+func ClassifyForDirectScrub(resource types.ResourceObject) types.ResourceClassification {
+	if !resources.IsBroadScrubKind(resource.Kind()) {
+		return newClassification(resource, types.ClassificationExclude, "kind not supported for direct scrub")
+	}
+	return classifyForScrub(resource)
+}
+
+func classifyForScrub(resource types.ResourceObject) types.ResourceClassification {
+	if resource.APIVersion() == "gitops.stakkr.io/v1alpha1" {
+		return newClassification(resource, types.ClassificationExclude, "GitOps Exporter control-plane resource")
+	}
+
+	if metadata := resource.Metadata(); metadata != nil {
+		if ownerRefs, ok := metadata["ownerReferences"].([]any); ok && len(ownerRefs) > 0 {
+			return newClassification(resource, types.ClassificationReview, "Controller-owned resource")
+		}
+		if labels, ok := metadata["labels"].(map[string]any); ok {
+			if managedBy, ok := labels["app.kubernetes.io/managed-by"].(string); ok && strings.ToLower(managedBy) == "helm" {
+				return newClassification(resource, types.ClassificationReview, "Helm-managed lifecycle detected")
+			}
+		}
+	}
+
+	if openshift.IsScaffoldingResource(resource) {
+		return newClassification(resource, types.ClassificationReview, "OpenShift-injected namespace scaffolding")
+	}
+
+	switch resource.Kind() {
+	case "Pod", "ReplicaSet", "EndpointSlice", "Endpoints", "Event", "ControllerRevision",
+		"Lease", "TokenReview", "SubjectAccessReview", "Node", "PersistentVolume":
+		return newClassification(resource, types.ClassificationReview, "Runtime or cluster-owned resource; review before use")
+	case "Secret", "PodDisruptionBudget", "ResourceQuota", "LimitRange", "DeploymentConfig":
+		return newClassification(resource, types.ClassificationReview, reviewReasonForKind(resource.Kind()))
+	case "PersistentVolumeClaim", "ImageStream", "ImageStreamTag":
+		return newClassification(resource, types.ClassificationCleanup, cleanupReasonForKind(resource.Kind()))
+	case "Service":
+		if spec, ok := resource["spec"].(map[string]any); ok {
+			if serviceType, ok := spec["type"].(string); ok && serviceType == "LoadBalancer" {
+				return newClassification(resource, types.ClassificationCleanup, "LoadBalancer service needs environment-specific cleanup")
+			}
+		}
+		return newClassification(resource, types.ClassificationInclude, "Declarative service resource")
+	default:
+		return newClassification(resource, types.ClassificationInclude, includeReasonForKind(resource.Kind()))
+	}
+}
+
 func ClassifyResource(resource types.ResourceObject) types.ResourceClassification {
 	if resource.APIVersion() == "gitops.stakkr.io/v1alpha1" {
 		return newClassification(resource, types.ClassificationExclude, "GitOps Exporter control-plane resource")
@@ -51,7 +98,7 @@ func ClassifyResource(resource types.ResourceObject) types.ResourceClassificatio
 			}
 		}
 		return newClassification(resource, types.ClassificationInclude, "Declarative service resource")
-	case "Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob", "ConfigMap", "ServiceAccount", "Role", "RoleBinding", "NetworkPolicy", "HorizontalPodAutoscaler", "Route", "BuildConfig":
+	case "Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob", "ConfigMap", "ServiceAccount", "Role", "RoleBinding", "NetworkPolicy", "HorizontalPodAutoscaler", "Route", "BuildConfig", "Ingress":
 		return newClassification(resource, types.ClassificationInclude, includeReasonForKind(resource.Kind()))
 	default:
 		return newClassification(resource, types.ClassificationReview, "No explicit classifier yet; review before export")
@@ -115,6 +162,8 @@ func includeReasonForKind(kind string) string {
 		return "Namespaced access or policy resource is declarative"
 	case "HorizontalPodAutoscaler":
 		return "Scaling policy resource is declarative"
+	case "Ingress":
+		return "Ingress routing resource is declarative"
 	default:
 		return "Workload resource is declarative"
 	}
