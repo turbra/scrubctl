@@ -1,4 +1,12 @@
+---
+title: Testing
+description: >-
+  How scrubctl's test fixtures and sanitization tests work.
+---
+
 # Testing
+
+Developer guide for scrubctl's test model. For command usage and installation, see <a href="{{ '/' | relative_url }}"><kbd>DOCS HOME</kbd></a> or <a href="{{ '/cli.html' | relative_url }}"><kbd>COMMAND REFERENCE</kbd></a>.
 
 scrubctl uses fixture-based golden tests as its primary test strategy. The fixture files under `testdata/fixtures/` are test inputs and expected outputs only — they are not runtime data used by the scrubctl binary.
 

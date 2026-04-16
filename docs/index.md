@@ -67,6 +67,8 @@ scrubctl generate argocd my-app \
 
 - <a href="{{ '/cli.html' | relative_url }}"><kbd>COMMAND REFERENCE</kbd></a>
   for full command details, global flags, and examples
+- <a href="{{ '/testing.html' | relative_url }}"><kbd>TESTING</kbd></a>
+  for how fixtures, parity tests, and sanitization quality checks work
 
 ## Related
 

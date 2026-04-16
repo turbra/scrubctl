@@ -200,3 +200,5 @@ Use the Make targets from the repo root:
 | `make build` | Compiles `scrubctl` to `./bin/scrubctl` |
 | `make install` | Runs `go install ./cmd/scrubctl`; binary lands in `$(go env GOBIN)` if set, otherwise `$(go env GOPATH)/bin` |
 | `make test` | Runs Go unit tests |
+
+For details on the fixture-based test model, sanitization quality checks, and how to add or update test cases, see <a href="{{ '/testing.html' | relative_url }}"><kbd>TESTING</kbd></a>.
