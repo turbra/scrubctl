@@ -6,7 +6,7 @@ A standalone Go CLI that scans a Kubernetes or OpenShift namespace, classifies r
 
 ## Demo
 
-![scrubctl namespace scan](docs/scrubctl-namespace.png)
+[![scrubctl namespace scan](docs/scrubctl-namespace.png)](https://turbra.github.io/scrubctl/#demo)
 
 [Watch the terminal demo](https://turbra.github.io/scrubctl/#demo) on the project site to see `scrubctl` in action.
 
