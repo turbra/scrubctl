@@ -1,8 +1,25 @@
-# scrubctl
+<h1 align="center">scrubctl</h1>
+
+<p align="center">
+  <strong>Classify resources. Sanitize live manifests. Export GitOps-ready artifacts.</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache--2.0-2C7A7B?style=flat-square" alt="License: Apache-2.0"></a>
+</p>
+
+<p align="center">
+  <a href="https://turbra.github.io/scrubctl/">scrubctl</a> •
+  <a href="#demo">Demo</a> •
+  <a href="#install">Install</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#documentation">Documentation</a> •
+  <a href="#related">Related</a>
+</p>
+
+---
 
 A standalone Go CLI that scans a Kubernetes or OpenShift namespace, classifies resources, sanitizes live manifests, and exports GitOps-ready artifacts. Use it in terminal workflows or CI/CD pipelines where the web console is not available.
-
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-2C7A7B?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Demo
 
