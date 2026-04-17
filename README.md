@@ -19,7 +19,7 @@
 
 ---
 
-A standalone Go CLI that scans a Kubernetes or OpenShift namespace, classifies resources, sanitizes live manifests, and exports GitOps-ready artifacts. Use it in terminal workflows or CI/CD pipelines where the web console is not available.
+A standalone Go CLI that scrubs Kubernetes and OpenShift manifests, scans namespaces, and exports GitOps-ready artifacts. Use it from the terminal or automation pipelines for inline scrubbing and clean GitOps export workflows.
 
 ## Demo
 
