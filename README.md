@@ -2,8 +2,6 @@
   <img src="docs/scrubctl-full.png" alt="scrubctl" width="300" />
 </p>
 
-<h1 align="center">scrubctl</h1>
-
 <p align="center">
   <strong>Classify resources. Sanitize live manifests. Export GitOps-ready artifacts.</strong>
 </p>
