@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/scrubctl.png" alt="scrubctl" width="120" />
+</p>
+
 <h1 align="center">scrubctl</h1>
 
 <p align="center">
