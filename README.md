@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/scrubctl-full.png" alt="scrubctl" width="300" />
+  <a href="https://turbra.github.io/scrubctl/"><img src="docs/scrubctl-full.png" alt="scrubctl" width="300" /></a>
 </p>
 
 <p align="center">
