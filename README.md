@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/scrubctl.png" alt="scrubctl" width="120" />
+  <img src="docs/scrubctl-full.png" alt="scrubctl" width="300" />
 </p>
 
 <h1 align="center">scrubctl</h1>
