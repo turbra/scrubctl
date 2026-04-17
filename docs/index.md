@@ -8,7 +8,7 @@ description: >-
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/License-Apache--2.0-2C7A7B?style=flat-square" /></a>
 </div>
 
-A standalone Go CLI that scans a Kubernetes or OpenShift namespace, classifies resources, sanitizes live manifests, and exports GitOps-ready artifacts. Use it in terminal workflows or CI/CD pipelines where the web console is not available.
+A standalone Go CLI that scrubs Kubernetes and OpenShift manifests, scans namespaces, and exports GitOps-ready artifacts. Use it from the terminal or automation pipelines for inline scrubbing and clean GitOps export workflows.
 
 ## Demo
 
