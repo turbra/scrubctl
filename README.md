@@ -57,7 +57,13 @@ scrubctl version
 
 If you want a binary you can copy into `/usr/local/bin` or another standard path, use a release archive instead.
 
-Tagged releases are published automatically when a `v*.*.*` tag is pushed. Each release includes prebuilt archives for Linux, macOS, and Windows on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
+Tagged releases are published automatically when a `v*.*.*` tag is pushed. Each release includes prebuilt archives for the same primary platform targets that the `oc` client ships today:
+
+- Linux: `amd64`, `arm64`, `ppc64le`, `s390x`
+- macOS: `amd64`, `arm64`
+- Windows: `amd64`
+
+Release archives are published on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
 Each tagged release also includes SBOM JSON files for the published archives.
 
 ### Install from a release archive

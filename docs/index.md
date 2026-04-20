@@ -49,7 +49,13 @@ hash -r
 scrubctl version
 ```
 
-Tagged releases are published automatically when a `v*.*.*` tag is pushed. Release archives for Linux and macOS are published as `.tar.gz`; Windows archives are published as `.zip` on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
+Tagged releases are published automatically when a `v*.*.*` tag is pushed. The release matrix follows the same primary platform targets that the `oc` client ships today:
+
+- Linux: `amd64`, `arm64`, `ppc64le`, `s390x`
+- macOS: `amd64`, `arm64`
+- Windows: `amd64`
+
+Linux and macOS release archives are published as `.tar.gz`; Windows archives are published as `.zip` on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
 Each tagged release also includes SBOM JSON files for the published archives.
 
 ### Install from a release archive
