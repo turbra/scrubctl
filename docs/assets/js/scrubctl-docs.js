@@ -94,6 +94,47 @@ async function renderMermaidDiagrams() {
   });
 }
 
+const COPY_LABELS = { idle: 'Copy', copied: 'Copied', failed: 'Failed' };
+
+async function copyCodeboxCode(button) {
+  const codebox = button.closest('.codebox');
+  const code = codebox?.querySelector('pre code');
+  const label = button.querySelector('.codebox__copy-label');
+  if (!code || !label) return;
+  try {
+    await navigator.clipboard.writeText(code.textContent ?? '');
+    button.dataset.copyState = 'copied';
+  } catch {
+    button.dataset.copyState = 'failed';
+  }
+  label.textContent = COPY_LABELS[button.dataset.copyState] ?? COPY_LABELS.idle;
+  window.setTimeout(() => {
+    button.dataset.copyState = 'idle';
+    label.textContent = COPY_LABELS.idle;
+  }, 1800);
+}
+
+function toggleCodeboxWrap(button) {
+  const codebox = button.closest('.codebox');
+  if (!codebox) return;
+  const nextWrapped = !codebox.classList.contains('codebox--wrapped');
+  codebox.classList.toggle('codebox--wrapped', nextWrapped);
+  button.setAttribute('aria-pressed', nextWrapped ? 'true' : 'false');
+}
+
+document.addEventListener('click', (event) => {
+  const target = event.target instanceof Element ? event.target : null;
+  const copyButton = target?.closest('.codebox__copy');
+  if (copyButton instanceof HTMLButtonElement) {
+    void copyCodeboxCode(copyButton);
+    return;
+  }
+  const wrapButton = target?.closest('.codebox__wrap');
+  if (wrapButton instanceof HTMLButtonElement) {
+    toggleCodeboxWrap(wrapButton);
+  }
+});
+
 async function initializeDocs() {
   buildPageToc();
   await renderMermaidDiagrams();

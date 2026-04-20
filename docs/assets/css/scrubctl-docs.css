@@ -332,11 +332,136 @@ a:focus {
   border-radius: 0;
 }
 
-.markdown-body pre.shiki {
-  background: unset;
+.markdown-body .codebox {
+  display: block;
+  margin: 1.25rem 0 1.5rem;
+  border: 1px solid #30363d;
+  border-radius: 0;
+  overflow: hidden;
+  background: #24292e;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.markdown-body .codebox__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #21262d;
+  background: linear-gradient(180deg, #2d333b, #22272e);
+}
+
+.markdown-body .codebox__language {
+  color: #8b949e;
+  font-family: "Red Hat Mono", Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.markdown-body .codebox__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.markdown-body .codebox__copy,
+.markdown-body .codebox__wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.62rem;
+  border: 1px solid #3d444d;
+  border-radius: 999px;
+  background: #1c2128;
+  color: #c9d1d9;
+  cursor: pointer;
+  font-family: "Red Hat Text", Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.markdown-body .codebox__copy:hover,
+.markdown-body .codebox__copy:focus-visible,
+.markdown-body .codebox__wrap:hover,
+.markdown-body .codebox__wrap:focus-visible {
+  background: #21262d;
+  border-color: #8b949e;
+  color: #f0f6fc;
+}
+
+.markdown-body .codebox__copy[data-copy-state="copied"] {
+  border-color: #238636;
+  background: rgba(35, 134, 54, 0.18);
+  color: #3fb950;
+}
+
+.markdown-body .codebox__copy[data-copy-state="failed"] {
+  border-color: #da3633;
+  background: rgba(218, 54, 51, 0.16);
+  color: #ff7b72;
+}
+
+.markdown-body .codebox__wrap[aria-pressed="true"] {
+  border-color: var(--sc-red);
+  background: rgba(238, 0, 0, 0.12);
+  color: #ff8f8f;
+}
+
+.markdown-body .codebox__copy-icon,
+.markdown-body .codebox__wrap-icon {
+  display: inline-flex;
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.markdown-body .codebox__copy-icon svg,
+.markdown-body .codebox__wrap-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.markdown-body .codebox > pre.shiki {
+  margin: 0;
+  padding: 1rem 1.1rem 1.1rem;
+  overflow: auto;
   color: unset;
+  background: #24292e;
   border: none;
-  border-left: 4px solid var(--sc-red);
+  border-radius: 0;
+}
+
+.markdown-body .codebox > pre.shiki code {
+  display: block;
+  font-family: "Red Hat Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.markdown-body .codebox--wrapped > pre.shiki code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  .markdown-body .codebox__toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0.55rem 0.85rem;
+  }
+
+  .markdown-body .codebox > pre.shiki {
+    padding: 0.85rem 0.9rem 0.95rem;
+  }
 }
 
 .markdown-body code {
