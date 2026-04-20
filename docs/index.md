@@ -39,6 +39,16 @@ Or install directly:
 go install github.com/turbra/scrubctl/cmd/scrubctl@latest
 ```
 
+`go install` writes the binary to `$(go env GOBIN)` if set, otherwise `$(go env GOPATH)/bin` (typically `~/go/bin`). It does not place `scrubctl` into `/usr/local/bin` or another system path automatically.
+
+If that directory is not already on your `PATH`, add it before running `scrubctl`:
+
+```sh
+export PATH="$(go env GOPATH)/bin:$PATH"
+hash -r
+scrubctl version
+```
+
 Tagged releases are published automatically when a `v*.*.*` tag is pushed. Release archives for Linux and macOS are published as `.tar.gz`; Windows archives are published as `.zip` on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
 
 ## Quick Start

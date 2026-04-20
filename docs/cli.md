@@ -12,6 +12,8 @@ For installation instructions, quick start examples, and the embedded demo, see 
 
 Tagged releases are published automatically when a `v*.*.*` tag is pushed. Linux and macOS release archives are `.tar.gz`; Windows release archives are `.zip`.
 
+If you install with `go install github.com/turbra/scrubctl/cmd/scrubctl@latest`, the binary is written to `$(go env GOBIN)` if set, otherwise `$(go env GOPATH)/bin`. That does not update your shell `PATH` automatically.
+
 ## Usage
 
 ```sh
