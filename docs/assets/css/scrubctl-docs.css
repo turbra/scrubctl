@@ -335,10 +335,10 @@ a:focus {
 .markdown-body .codebox {
   display: block;
   margin: 1.25rem 0 1.5rem;
-  border: 1px solid #30363d;
+  border: 1px solid #21262d;
   border-radius: 0.8rem;
   overflow: hidden;
-  background: #24292e;
+  background: #0a0c10;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
 }
 
@@ -348,8 +348,8 @@ a:focus {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #21262d;
-  background: linear-gradient(180deg, #2d333b, #22272e);
+  border-bottom: 1px solid #161b22;
+  background: linear-gradient(180deg, #161b22, #0d1117);
 }
 
 .markdown-body .codebox__language {
@@ -434,7 +434,7 @@ a:focus {
   padding: 1rem 1.1rem 1.1rem;
   overflow: auto;
   color: unset;
-  background: #24292e;
+  background: #0a0c10;
   border: none;
   border-radius: 0;
 }
