@@ -51,6 +51,26 @@ scrubctl version
 
 Tagged releases are published automatically when a `v*.*.*` tag is pushed. Release archives for Linux and macOS are published as `.tar.gz`; Windows archives are published as `.zip` on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
 
+### Install from a release archive
+
+Download the archive matching your OS and architecture from the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
+
+Linux:
+
+```sh
+tar -xzf scrubctl-<version>-linux-<arch>.tar.gz
+sudo mv scrubctl /usr/local/bin/
+scrubctl version
+```
+
+Windows:
+
+```powershell
+Expand-Archive scrubctl-<version>-windows-<arch>.zip -DestinationPath .
+move .\scrubctl.exe $env:USERPROFILE\AppData\Local\Microsoft\WindowsApps\
+scrubctl.exe version
+```
+
 ## Quick Start
 
 ```sh
