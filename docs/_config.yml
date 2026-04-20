@@ -11,6 +11,12 @@ plugins:
 markdown: kramdown
 kramdown:
   input: GFM
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - _scripts
+
 defaults:
   - scope:
       path: ""
