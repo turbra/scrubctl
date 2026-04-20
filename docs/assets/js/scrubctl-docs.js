@@ -94,8 +94,38 @@ async function renderMermaidDiagrams() {
   });
 }
 
+async function upgradeCodeBlocks() {
+  const blocks = [
+    ...document.querySelectorAll(".markdown-body div.highlighter-rouge"),
+  ].filter((el) => !el.classList.contains("language-mermaid"));
+
+  if (!blocks.length) return;
+
+  const { codeToHtml } = await import("https://esm.sh/shiki@1");
+
+  for (const block of blocks) {
+    const langClass = [...block.classList].find((c) =>
+      c.startsWith("language-")
+    );
+    const lang = langClass ? langClass.replace("language-", "") : "text";
+    const codeEl = block.querySelector("code");
+    if (!codeEl) continue;
+
+    const code = codeEl.textContent ?? "";
+    let html;
+    try {
+      html = await codeToHtml(code, { lang, theme: "github-dark" });
+    } catch {
+      html = await codeToHtml(code, { lang: "text", theme: "github-dark" });
+    }
+
+    block.outerHTML = html;
+  }
+}
+
 async function initializeDocs() {
   buildPageToc();
+  await upgradeCodeBlocks();
   await renderMermaidDiagrams();
 }
 

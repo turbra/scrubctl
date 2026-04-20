@@ -332,6 +332,13 @@ a:focus {
   border-radius: 0;
 }
 
+.markdown-body pre.shiki {
+  background: unset;
+  color: unset;
+  border: none;
+  border-left: 4px solid var(--sc-red);
+}
+
 .markdown-body code {
   padding: 0.12rem 0.28rem;
   background: rgba(0, 0, 0, 0.04);
