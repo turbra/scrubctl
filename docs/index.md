@@ -25,7 +25,7 @@ A standalone Go CLI that scrubs Kubernetes and OpenShift manifests, scans namesp
 
 ## Install
 
-Build from source (requires Go 1.21+):
+Build from source (requires Go 1.24+):
 
 ```sh
 go build -o scrubctl ./cmd/scrubctl
@@ -39,7 +39,7 @@ Or install directly:
 go install github.com/turbra/scrubctl/cmd/scrubctl@latest
 ```
 
-Release archives for Linux, macOS, and Windows are available on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
+Tagged releases are published automatically when a `v*.*.*` tag is pushed. Release archives for Linux and macOS are published as `.tar.gz`; Windows archives are published as `.zip` on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
 
 ## Quick Start
 

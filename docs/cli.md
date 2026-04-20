@@ -10,6 +10,8 @@ Complete reference for every `scrubctl` subcommand, flag, and supported resource
 
 For installation instructions, quick start examples, and the embedded demo, see <a href="{{ '/' | relative_url }}"><kbd>DOCS HOME</kbd></a>.
 
+Tagged releases are published automatically when a `v*.*.*` tag is pushed. Linux and macOS release archives are `.tar.gz`; Windows release archives are `.zip`.
+
 ## Usage
 
 ```sh
@@ -200,5 +202,6 @@ Use the Make targets from the repo root:
 | `make build` | Compiles `scrubctl` to `./bin/scrubctl` |
 | `make install` | Runs `go install ./cmd/scrubctl`; binary lands in `$(go env GOBIN)` if set, otherwise `$(go env GOPATH)/bin` |
 | `make test` | Runs Go unit tests |
+| `make release` | Runs tests and GoReleaser locally |
 
 For details on the fixture-based test model, sanitization quality checks, and how to add or update test cases, see <a href="{{ '/testing.html' | relative_url }}"><kbd>TESTING</kbd></a>.
