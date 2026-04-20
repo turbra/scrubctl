@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"sort"
 	"strings"
 	"text/tabwriter"
@@ -29,6 +30,10 @@ var (
 	commit    = "unknown"
 	buildDate = "unknown"
 )
+
+func init() {
+	populateVersionMetadata()
+}
 
 type rootOptions struct {
 	ConfigPath     string
@@ -260,6 +265,40 @@ func newVersionCommand() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Fprintf(cmd.OutOrStdout(), "scrubctl %s (commit %s, built %s)\n", version, commit, buildDate)
 		},
+	}
+}
+
+func populateVersionMetadata() {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return
+	}
+
+	settings := map[string]string{}
+	for _, setting := range info.Settings {
+		settings[setting.Key] = setting.Value
+	}
+
+	if version == "dev" {
+		if info.Main.Version != "" && info.Main.Version != "(devel)" {
+			version = info.Main.Version
+		}
+	}
+
+	if commit == "unknown" {
+		if vcsRevision := settings["vcs.revision"]; vcsRevision != "" {
+			commit = vcsRevision
+		}
+	}
+
+	if buildDate == "unknown" {
+		if vcsTime := settings["vcs.time"]; vcsTime != "" {
+			buildDate = vcsTime
+		}
+	}
+
+	if version == "dev" && settings["vcs.modified"] == "true" {
+		version = version + "-dirty"
 	}
 }
 
