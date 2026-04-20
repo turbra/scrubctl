@@ -50,6 +50,7 @@ scrubctl version
 ```
 
 Tagged releases are published automatically when a `v*.*.*` tag is pushed. Release archives for Linux and macOS are published as `.tar.gz`; Windows archives are published as `.zip` on the [GitHub Releases page](https://github.com/turbra/scrubctl/releases).
+Each tagged release also includes SBOM JSON files for the published archives.
 
 ### Install from a release archive
 

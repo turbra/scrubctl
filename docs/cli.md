@@ -11,6 +11,7 @@ Complete reference for every `scrubctl` subcommand, flag, and supported resource
 For installation instructions, quick start examples, and the embedded demo, see <a href="{{ '/' | relative_url }}"><kbd>DOCS HOME</kbd></a>.
 
 Tagged releases are published automatically when a `v*.*.*` tag is pushed. Linux and macOS release archives are `.tar.gz`; Windows release archives are `.zip`.
+Each tagged release also includes SBOM JSON files for the published archives.
 
 If you install with `go install github.com/turbra/scrubctl/cmd/scrubctl@latest`, the binary is written to `$(go env GOBIN)` if set, otherwise `$(go env GOPATH)/bin`. That does not update your shell `PATH` automatically.
 
