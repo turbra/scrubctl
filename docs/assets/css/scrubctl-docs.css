@@ -444,18 +444,19 @@ a:focus {
   font-family: "Red Hat Mono", "SFMono-Regular", Consolas, monospace;
   font-size: 0.9rem;
   line-height: 1.5;
-  white-space: pre;
+  white-space: normal;
 }
 
 .markdown-body .codebox > pre.shiki .line {
   display: block;
+  white-space: pre;
 }
 
 .markdown-body .codebox > pre.shiki .line:empty::before {
   content: " ";
 }
 
-.markdown-body .codebox--wrapped > pre.shiki code {
+.markdown-body .codebox--wrapped > pre.shiki .line {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
